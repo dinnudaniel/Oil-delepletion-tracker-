@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oil Depletion Tracker — Dangote Deal Intelligence</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Chart.js for charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <span class="header-icon">⛽</span>
+      <div>
+        <h1 class="header-title">Oil Depletion Tracker</h1>
+        <p class="header-sub">Dangote Deal Intelligence Dashboard</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="header-stat">
+        <span class="stat-label">Last Refresh</span>
+        <span class="stat-value" id="lastRefreshTime">—</span>
+      </div>
+      <div class="header-stat">
+        <span class="stat-label">Next Auto-Refresh</span>
+        <span class="stat-value" id="countdownTimer">24h</span>
+      </div>
+      <button class="btn-refresh" id="btnRefresh" onclick="manualRefresh()">↻ Refresh Now</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== ALERT BANNER ===== -->
+<div class="alert-banner" id="alertBanner">
+  <span class="alert-icon">🚨</span>
+  <span id="alertText">Loading critical alerts…</span>
+</div>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<main class="main-layout">
+
+  <!-- LEFT NAV -->
+  <nav class="side-nav">
+    <button class="nav-btn active" onclick="showView('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" onclick="showView('opportunities')">💼 Deal Opportunities</button>
+    <button class="nav-btn" onclick="showView('stations')">⛽ Disrupted Stations</button>
+    <button class="nav-btn" onclick="showView('countries')">🌍 All Countries</button>
+    <button class="nav-btn" onclick="showView('dangote')">🏭 Dangote Profile</button>
+    <hr class="nav-divider"/>
+    <div class="nav-legend">
+      <div class="legend-item"><span class="dot critical"></span> CRITICAL (&lt;45 days)</div>
+      <div class="legend-item"><span class="dot watch"></span> WATCH (45–89 days)</div>
+      <div class="legend-item"><span class="dot normal"></span> NORMAL (90+ days)</div>
+    </div>
+  </nav>
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+
+    <!-- ============ DASHBOARD VIEW ============ -->
+    <section id="view-dashboard" class="view active">
+      <h2 class="view-title">📊 Global Overview</h2>
+
+      <!-- KPI Cards -->
+      <div class="kpi-row" id="kpiRow"></div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3>Reserve Days by Country</h3>
+          <canvas id="barChart" height="280"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Deal Opportunity Score (Dangote Targets)</h3>
+          <canvas id="pieChart" height="280"></canvas>
+        </div>
+      </div>
+
+      <!-- Country Cards Grid -->
+      <h3 class="section-heading">Country Status Cards</h3>
+      <div class="cards-grid" id="countryCards"></div>
+    </section>
+
+    <!-- ============ OPPORTUNITIES VIEW ============ -->
+    <section id="view-opportunities" class="view">
+      <h2 class="view-title">💼 Dangote Deal Opportunities</h2>
+      <p class="view-desc">Countries ranked by likelihood to need to purchase from Dangote Refinery. Based on reserve levels, import dependency, and refinery closures.</p>
+      <div id="opportunitiesList"></div>
+    </section>
+
+    <!-- ============ STATIONS VIEW ============ -->
+    <section id="view-stations" class="view">
+      <h2 class="view-title">⛽ Disrupted Gas Stations & Fuel Facilities</h2>
+      <p class="view-desc">Closed, supply-disrupted, or financially pressured fuel stations and depots worldwide. These represent immediate on-the-ground evidence of supply crises — and entry points for brokering supply deals.</p>
+      <div class="filter-bar">
+        <input type="text" id="stationSearch" placeholder="Filter by country, city, or name…" oninput="filterStations()" />
+        <select id="stationStatusFilter" onchange="filterStations()">
+          <option value="">All statuses</option>
+          <option value="Closed">Closed</option>
+          <option value="Supply">Supply Issues</option>
+          <option value="Reduced">Reduced Capacity</option>
+        </select>
+      </div>
+      <div id="stationsList"></div>
+    </section>
+
+    <!-- ============ ALL COUNTRIES VIEW ============ -->
+    <section id="view-countries" class="view">
+      <h2 class="view-title">🌍 All Tracked Countries (18+)</h2>
+      <div class="filter-bar">
+        <input type="text" id="countrySearch" placeholder="Search country…" oninput="filterCountries()" />
+        <select id="continentFilter" onchange="filterCountries()">
+          <option value="">All Continents</option>
+          <option value="Oceania">Oceania</option>
+          <option value="Europe">Europe</option>
+          <option value="Asia">Asia</option>
+          <option value="Africa">Africa</option>
+          <option value="Americas">Americas</option>
+        </select>
+        <select id="statusFilter" onchange="filterCountries()">
+          <option value="">All Statuses</option>
+          <option value="CRITICAL">CRITICAL</option>
+          <option value="WATCH">WATCH</option>
+          <option value="NORMAL">NORMAL</option>
+        </select>
+      </div>
+      <div id="allCountriesTable"></div>
+    </section>
+
+    <!-- ============ DANGOTE VIEW ============ -->
+    <section id="view-dangote" class="view">
+      <h2 class="view-title">🏭 Dangote Refinery — Brokerage Profile</h2>
+      <div id="dangoteProfile"></div>
+    </section>
+
+  </div><!-- /content-area -->
+</main>
+
+<!-- ===== COUNTRY MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <p>Oil Depletion Tracker &nbsp;|&nbsp; Data sources: IEA, EIA, national energy agencies &nbsp;|&nbsp; Refreshes daily &nbsp;|&nbsp; For brokerage intelligence purposes only</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

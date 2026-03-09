@@ -1,0 +1,478 @@
+// Oil Depletion Tracker — Country & Station Data
+// Sources: IEA, EIA, national energy agencies (data as of early 2026)
+
+const OIL_DATA = {
+  lastUpdated: new Date().toISOString(),
+
+  // Dangote Refinery info
+  dangote: {
+    name: "Dangote Petroleum Refinery",
+    location: "Lekki Free Zone, Lagos, Nigeria",
+    capacity_bpd: 650000,
+    status: "Operational",
+    products: ["Petrol (PMS)", "Diesel (AGO)", "Jet Fuel (ATK)", "LPG", "Polypropylene"],
+    contact_note: "Largest single-train refinery in the world. Actively seeking export markets.",
+    website: "https://www.dangote.com",
+  },
+
+  countries: [
+    {
+      id: "AU",
+      name: "Australia",
+      flag: "🇦🇺",
+      continent: "Oceania",
+      reserveDays: 33,
+      trend: "declining",
+      dailyConsumption_bpd: 950000,
+      currentReserves_mb: 31, // million barrels
+      importDependency: 91, // % of oil imported
+      status: "CRITICAL",
+      alert: "Below IEA 90-day mandatory threshold. Refinery closures ongoing.",
+      opportunityScore: 98,
+      dangoteOpportunity: true,
+      notes: "Australia has closed most of its domestic refineries. Fully import-dependent. Ideal Dangote supply target.",
+      stations: [
+        { name: "Ampol Clyde Refinery (Closed)", city: "Sydney, NSW", type: "Refinery", status: "Closed 2021", lat: -33.85, lng: 151.01 },
+        { name: "Viva Energy Geelong (Sole Survivor)", city: "Geelong, VIC", type: "Refinery", status: "At Risk", lat: -38.14, lng: 144.35 },
+        { name: "Multiple Inland Petrol Stations", city: "Outback QLD/NT/WA", type: "Retail Station", status: "Supply Disrupted", lat: -23.7, lng: 133.88 },
+        { name: "FuelFix Petrol — Darwin", city: "Darwin, NT", type: "Retail Station", status: "Supply Disrupted", lat: -12.46, lng: 130.84 },
+        { name: "BP Wholesale — Perth Hub", city: "Perth, WA", type: "Wholesale Depot", status: "Reduced Capacity", lat: -31.95, lng: 115.86 },
+      ],
+    },
+    {
+      id: "NZ",
+      name: "New Zealand",
+      flag: "🇳🇿",
+      continent: "Oceania",
+      reserveDays: 28,
+      trend: "declining",
+      dailyConsumption_bpd: 160000,
+      currentReserves_mb: 4.5,
+      importDependency: 100,
+      status: "CRITICAL",
+      alert: "Last domestic refinery (Marsden Point) converted to import terminal in 2022.",
+      opportunityScore: 97,
+      dangoteOpportunity: true,
+      notes: "Zero domestic refining capacity. 100% import dependent. Dangote supply would be a direct route.",
+      stations: [
+        { name: "Marsden Point (Converted Terminal)", city: "Whangārei", type: "Import Terminal", status: "Import Only", lat: -35.83, lng: 174.49 },
+        { name: "Z Energy — South Island Hub", city: "Christchurch", type: "Distribution Hub", status: "Supply Constrained", lat: -43.53, lng: 172.63 },
+        { name: "Gull Petroleum — Auckland", city: "Auckland", type: "Retail Chain", status: "Spot Buying", lat: -36.85, lng: 174.76 },
+      ],
+    },
+    {
+      id: "IE",
+      name: "Ireland",
+      flag: "🇮🇪",
+      continent: "Europe",
+      reserveDays: 42,
+      trend: "declining",
+      dailyConsumption_bpd: 155000,
+      currentReserves_mb: 6.5,
+      importDependency: 98,
+      status: "CRITICAL",
+      alert: "No domestic production. Last refinery closed decades ago. Highly vulnerable.",
+      opportunityScore: 90,
+      dangoteOpportunity: true,
+      notes: "Imports all petroleum products. Small economy with tight logistics.",
+      stations: [
+        { name: "Whitegate Refinery (Closed)", city: "Cork", type: "Refinery", status: "Closed 2014", lat: 51.83, lng: -8.28 },
+        { name: "Circle K Ireland — Cork", city: "Cork", type: "Retail Chain", status: "Supply Pressure", lat: 51.9, lng: -8.47 },
+        { name: "Maxol Wholesale — Dublin", city: "Dublin", type: "Wholesale", status: "Supply Pressure", lat: 53.33, lng: -6.25 },
+      ],
+    },
+    {
+      id: "CH",
+      name: "Switzerland",
+      flag: "🇨🇭",
+      continent: "Europe",
+      reserveDays: 55,
+      trend: "stable",
+      dailyConsumption_bpd: 250000,
+      currentReserves_mb: 13.75,
+      importDependency: 100,
+      status: "WATCH",
+      alert: "Mandatory IEA stockpile. No domestic production. Dependent on European pipeline network.",
+      opportunityScore: 60,
+      dangoteOpportunity: false,
+      notes: "Well-managed strategic reserves but entirely import dependent.",
+      stations: [
+        { name: "Tamoil Refinery Collombey", city: "Collombey, Valais", type: "Refinery", status: "Limited Output", lat: 46.27, lng: 6.94 },
+        { name: "Migrol AG — Zürich", city: "Zürich", type: "Retail Chain", status: "Normal", lat: 47.38, lng: 8.54 },
+      ],
+    },
+    {
+      id: "SE",
+      name: "Sweden",
+      flag: "🇸🇪",
+      continent: "Europe",
+      reserveDays: 90,
+      trend: "stable",
+      dailyConsumption_bpd: 320000,
+      currentReserves_mb: 28.8,
+      importDependency: 70,
+      status: "NORMAL",
+      alert: "Meets IEA 90-day threshold. Transitioning to EV infrastructure.",
+      opportunityScore: 30,
+      dangoteOpportunity: false,
+      notes: "Strong energy transition policy. Long-term demand declining.",
+      stations: [
+        { name: "Preem Lysekil Refinery", city: "Lysekil", type: "Refinery", status: "Operational", lat: 58.27, lng: 11.44 },
+        { name: "OKQ8 — Stockholm Hub", city: "Stockholm", type: "Distribution", status: "Normal", lat: 59.33, lng: 18.07 },
+      ],
+    },
+    {
+      id: "DK",
+      name: "Denmark",
+      flag: "🇩🇰",
+      continent: "Europe",
+      reserveDays: 78,
+      trend: "declining",
+      dailyConsumption_bpd: 175000,
+      currentReserves_mb: 13.65,
+      importDependency: 55,
+      status: "WATCH",
+      alert: "North Sea production declining rapidly. Net importer by 2027.",
+      opportunityScore: 55,
+      dangoteOpportunity: false,
+      notes: "Own North Sea production shrinking. Will become fully import-dependent.",
+      stations: [
+        { name: "Kalundborg Refinery (Crossbridge Energy)", city: "Kalundborg", type: "Refinery", status: "Reduced Capacity", lat: 55.68, lng: 11.09 },
+        { name: "Circle K Denmark — Copenhagen", city: "Copenhagen", type: "Retail Chain", status: "Normal", lat: 55.68, lng: 12.57 },
+      ],
+    },
+    {
+      id: "JP",
+      name: "Japan",
+      flag: "🇯🇵",
+      continent: "Asia",
+      reserveDays: 119,
+      trend: "stable",
+      dailyConsumption_bpd: 3200000,
+      currentReserves_mb: 380,
+      importDependency: 99.7,
+      status: "NORMAL",
+      alert: "High strategic reserves. Supply chain disruption risk from Middle East.",
+      opportunityScore: 45,
+      dangoteOpportunity: false,
+      notes: "Very large consumer. Well-stocked but vulnerable to shipping route disruptions.",
+      stations: [
+        { name: "Eneos Kawasaki Refinery", city: "Kawasaki, Kanagawa", type: "Refinery", status: "Operational", lat: 35.52, lng: 139.72 },
+        { name: "Cosmo Oil Yokkaichi", city: "Yokkaichi, Mie", type: "Refinery", status: "Operational", lat: 34.97, lng: 136.62 },
+      ],
+    },
+    {
+      id: "KR",
+      name: "South Korea",
+      flag: "🇰🇷",
+      continent: "Asia",
+      reserveDays: 97,
+      trend: "stable",
+      dailyConsumption_bpd: 2600000,
+      currentReserves_mb: 252,
+      importDependency: 100,
+      status: "NORMAL",
+      alert: "Fully import dependent. Diversifying supply sources.",
+      opportunityScore: 40,
+      dangoteOpportunity: false,
+      notes: "One of the world's largest refiners. Seeks competitive crude supply.",
+      stations: [
+        { name: "SK Innovation Ulsan Refinery", city: "Ulsan", type: "Refinery", status: "Operational", lat: 35.54, lng: 129.31 },
+        { name: "GS Caltex Yeosu Refinery", city: "Yeosu, Jeonnam", type: "Refinery", status: "Operational", lat: 34.74, lng: 127.73 },
+      ],
+    },
+    {
+      id: "IN",
+      name: "India",
+      flag: "🇮🇳",
+      continent: "Asia",
+      reserveDays: 67,
+      trend: "declining",
+      dailyConsumption_bpd: 5300000,
+      currentReserves_mb: 355,
+      importDependency: 86,
+      status: "WATCH",
+      alert: "Demand growing faster than reserves. Seeking cost-effective alternatives to Middle East.",
+      opportunityScore: 85,
+      dangoteOpportunity: true,
+      notes: "Huge and growing market. Dangote's refined products highly competitive for India's coastal cities.",
+      stations: [
+        { name: "HPCL Vizag Refinery", city: "Visakhapatnam, AP", type: "Refinery", status: "Capacity Stretched", lat: 17.69, lng: 83.22 },
+        { name: "Indian Oil Barauni", city: "Barauni, Bihar", type: "Refinery", status: "Operational", lat: 25.47, lng: 86.0 },
+        { name: "Multiple Rural Pumps — UP/Bihar", city: "Uttar Pradesh", type: "Retail Stations", status: "Supply Gaps", lat: 26.85, lng: 80.95 },
+        { name: "BPCL Kerala Network", city: "Kochi, Kerala", type: "Distribution", status: "Supply Gaps", lat: 9.93, lng: 76.26 },
+      ],
+    },
+    {
+      id: "SG",
+      name: "Singapore",
+      flag: "🇸🇬",
+      continent: "Asia",
+      reserveDays: 45,
+      trend: "stable",
+      dailyConsumption_bpd: 1480000,
+      currentReserves_mb: 66.6,
+      importDependency: 100,
+      status: "WATCH",
+      alert: "Major trading hub. No domestic production. Very sensitive to Middle East pricing.",
+      opportunityScore: 70,
+      dangoteOpportunity: true,
+      notes: "Singapore is a major bunkering and trading hub. Dangote supply could undercut Middle East pricing here.",
+      stations: [
+        { name: "ExxonMobil Singapore Refinery", city: "Jurong Island", type: "Refinery", status: "Operational", lat: 1.26, lng: 103.69 },
+        { name: "Shell Pulau Bukom Refinery", city: "Pulau Bukom", type: "Refinery", status: "Operational", lat: 1.22, lng: 103.76 },
+        { name: "Caltex/Chevron — Tuas", city: "Tuas, Singapore", type: "Storage Terminal", status: "Cost Pressure", lat: 1.32, lng: 103.63 },
+      ],
+    },
+    {
+      id: "ZA",
+      name: "South Africa",
+      flag: "🇿🇦",
+      continent: "Africa",
+      reserveDays: 35,
+      trend: "declining",
+      dailyConsumption_bpd: 560000,
+      currentReserves_mb: 19.6,
+      importDependency: 75,
+      status: "CRITICAL",
+      alert: "Refineries ageing. Sasol & BP closures. Fuel shortages reported in inland areas.",
+      opportunityScore: 95,
+      dangoteOpportunity: true,
+      notes: "Closest African market to Dangote. Ideal candidate for supply deal. Fuel crisis ongoing.",
+      stations: [
+        { name: "BP Durban Refinery (Closing)", city: "Durban, KZN", type: "Refinery", status: "Shutdown Planned", lat: -29.88, lng: 31.02 },
+        { name: "Astron Energy Cape Town Refinery", city: "Cape Town, WC", type: "Refinery", status: "Reduced Output", lat: -33.93, lng: 18.49 },
+        { name: "FuelZone — Johannesburg South", city: "Johannesburg, GP", type: "Retail Station", status: "Dry Periods", lat: -26.27, lng: 27.86 },
+        { name: "Total Energies — Pretoria Depot", city: "Pretoria, GP", type: "Wholesale Depot", status: "Supply Gaps", lat: -25.75, lng: 28.19 },
+        { name: "Engen Kimberley Highway", city: "Kimberley, NC", type: "Retail Station", status: "Closed (Supply)", lat: -28.73, lng: 24.76 },
+        { name: "Puma Energy — Polokwane", city: "Polokwane, LP", type: "Retail Station", status: "Intermittent Supply", lat: -23.9, lng: 29.45 },
+      ],
+    },
+    {
+      id: "GB",
+      name: "United Kingdom",
+      flag: "🇬🇧",
+      continent: "Europe",
+      reserveDays: 70,
+      trend: "declining",
+      dailyConsumption_bpd: 1540000,
+      currentReserves_mb: 107.8,
+      importDependency: 65,
+      status: "WATCH",
+      alert: "North Sea production in long decline. Several refineries closed in recent years.",
+      opportunityScore: 60,
+      dangoteOpportunity: false,
+      notes: "Refineries shrinking. Long-term opportunity as North Sea exhausts.",
+      stations: [
+        { name: "ExxonMobil Fawley Refinery", city: "Southampton, Hampshire", type: "Refinery", status: "Operational", lat: 50.82, lng: -1.34 },
+        { name: "Essar Oil Stanlow Refinery", city: "Ellesmere Port, Cheshire", type: "Refinery", status: "Financial Risk", lat: 53.28, lng: -2.83 },
+        { name: "Jet/EG Group — M1 Corridor", city: "Northamptonshire", type: "Retail Chain", status: "Cost Pressure", lat: 52.24, lng: -0.9 },
+      ],
+    },
+    {
+      id: "DE",
+      name: "Germany",
+      flag: "🇩🇪",
+      continent: "Europe",
+      reserveDays: 90,
+      trend: "stable",
+      dailyConsumption_bpd: 2200000,
+      currentReserves_mb: 198,
+      importDependency: 98,
+      status: "NORMAL",
+      alert: "Meets IEA threshold. Russian pipeline cut-off resolved via alternative routes.",
+      opportunityScore: 35,
+      dangoteOpportunity: false,
+      notes: "Well-diversified supply. Transitioning heavily to renewables.",
+      stations: [
+        { name: "MiRO Refinery Karlsruhe", city: "Karlsruhe, BW", type: "Refinery", status: "Operational", lat: 49.06, lng: 8.33 },
+        { name: "Rosneft PCK Schwedt Refinery", city: "Schwedt, Brandenburg", type: "Refinery", status: "State Controlled", lat: 53.06, lng: 14.28 },
+      ],
+    },
+    {
+      id: "FR",
+      name: "France",
+      flag: "🇫🇷",
+      continent: "Europe",
+      reserveDays: 97,
+      trend: "stable",
+      dailyConsumption_bpd: 1660000,
+      currentReserves_mb: 161,
+      importDependency: 99,
+      status: "NORMAL",
+      alert: "Strategic reserves strong. Refineries operational but costly.",
+      opportunityScore: 30,
+      dangoteOpportunity: false,
+      notes: "Stable but cost-conscious. Long-term opportunity if Dangote pricing is competitive.",
+      stations: [
+        { name: "TotalEnergies Gonfreville Refinery", city: "Le Havre, Normandy", type: "Refinery", status: "Operational", lat: 49.51, lng: 0.22 },
+        { name: "Esso Port-Jérôme Refinery", city: "Notre-Dame-de-Gravenchon", type: "Refinery", status: "Operational", lat: 49.48, lng: 0.57 },
+      ],
+    },
+    {
+      id: "IT",
+      name: "Italy",
+      flag: "🇮🇹",
+      continent: "Europe",
+      reserveDays: 89,
+      trend: "declining",
+      dailyConsumption_bpd: 1270000,
+      currentReserves_mb: 113,
+      importDependency: 93,
+      status: "WATCH",
+      alert: "Just below IEA 90-day target. Several refineries running below capacity.",
+      opportunityScore: 65,
+      dangoteOpportunity: true,
+      notes: "Mediterranean gateway. Dangote supply via sea route is competitive.",
+      stations: [
+        { name: "ENI Sannazzaro Refinery", city: "Sannazzaro, Pavia", type: "Refinery", status: "Reduced Output", lat: 45.1, lng: 8.9 },
+        { name: "Saras Sarroch Refinery", city: "Cagliari, Sardinia", type: "Refinery", status: "Financial Pressure", lat: 39.06, lng: 9.0 },
+        { name: "IP (Italiana Petroli) — Calabria", city: "Reggio Calabria", type: "Retail Chain", status: "Supply Gaps", lat: 38.11, lng: 15.66 },
+      ],
+    },
+    {
+      id: "ES",
+      name: "Spain",
+      flag: "🇪🇸",
+      continent: "Europe",
+      reserveDays: 92,
+      trend: "stable",
+      dailyConsumption_bpd: 1310000,
+      currentReserves_mb: 120.5,
+      importDependency: 99,
+      status: "NORMAL",
+      alert: "Meets IEA threshold. Diversified supply chain.",
+      opportunityScore: 30,
+      dangoteOpportunity: false,
+      notes: "Stable. Atlantic coast access makes Dangote supply logistically feasible.",
+      stations: [
+        { name: "Repsol Tarragona Refinery", city: "Tarragona, Catalonia", type: "Refinery", status: "Operational", lat: 41.11, lng: 1.25 },
+        { name: "Cepsa La Rabida Refinery", city: "Huelva, Andalusia", type: "Refinery", status: "Operational", lat: 37.22, lng: -6.93 },
+      ],
+    },
+    {
+      id: "NL",
+      name: "Netherlands",
+      flag: "🇳🇱",
+      continent: "Europe",
+      reserveDays: 87,
+      trend: "declining",
+      dailyConsumption_bpd: 900000,
+      currentReserves_mb: 78.3,
+      importDependency: 100,
+      status: "WATCH",
+      alert: "Groningen gas field shutting down. Rotterdam as key hub under pressure.",
+      opportunityScore: 55,
+      dangoteOpportunity: false,
+      notes: "Rotterdam is Europe's largest port. Critical swing supplier for European markets.",
+      stations: [
+        { name: "Shell Pernis Refinery (Rotterdam)", city: "Rotterdam, ZH", type: "Refinery", status: "Operational", lat: 51.88, lng: 4.33 },
+        { name: "ExxonMobil Rotterdam Refinery", city: "Rotterdam, ZH", type: "Refinery", status: "Operational", lat: 51.9, lng: 4.3 },
+      ],
+    },
+    {
+      id: "BE",
+      name: "Belgium",
+      flag: "🇧🇪",
+      continent: "Europe",
+      reserveDays: 83,
+      trend: "declining",
+      dailyConsumption_bpd: 680000,
+      currentReserves_mb: 56.4,
+      importDependency: 100,
+      status: "WATCH",
+      alert: "Falling below 90-day IEA target. Dependent on Antwerp refining hub.",
+      opportunityScore: 55,
+      dangoteOpportunity: false,
+      notes: "Antwerp is critical European hub. Watch for supply disruptions.",
+      stations: [
+        { name: "TotalEnergies Antwerp Refinery", city: "Antwerp, Antwerpen", type: "Refinery", status: "Operational", lat: 51.3, lng: 4.23 },
+        { name: "Q8 (Kuwait Petroleum) — Ghent", city: "Ghent, East Flanders", type: "Retail Chain", status: "Cost Pressure", lat: 51.05, lng: 3.72 },
+      ],
+    },
+    {
+      id: "US",
+      name: "United States",
+      flag: "🇺🇸",
+      continent: "Americas",
+      reserveDays: 149,
+      trend: "stable",
+      dailyConsumption_bpd: 19700000,
+      currentReserves_mb: 2934,
+      importDependency: 42,
+      status: "NORMAL",
+      alert: "Strategic Petroleum Reserve (SPR) partially drawn down. Rebuilding underway.",
+      opportunityScore: 15,
+      dangoteOpportunity: false,
+      notes: "Major domestic producer. Limited opportunity for Dangote unless pricing is exceptional.",
+      stations: [
+        { name: "Motiva Port Arthur Refinery", city: "Port Arthur, TX", type: "Refinery", status: "Operational", lat: 29.9, lng: -93.93 },
+        { name: "Marathon Galveston Bay Refinery", city: "Texas City, TX", type: "Refinery", status: "Operational", lat: 29.39, lng: -94.91 },
+      ],
+    },
+    {
+      id: "BR",
+      name: "Brazil",
+      flag: "🇧🇷",
+      continent: "Americas",
+      reserveDays: 58,
+      trend: "declining",
+      dailyConsumption_bpd: 3150000,
+      currentReserves_mb: 182.7,
+      importDependency: 20,
+      status: "WATCH",
+      alert: "Petrobras refinery cuts creating regional shortfalls in Northeast Brazil.",
+      opportunityScore: 70,
+      dangoteOpportunity: true,
+      notes: "Northeast Brazil is under-supplied. Atlantic route from Dangote is competitive.",
+      stations: [
+        { name: "Petrobras RNEST Refinery", city: "Ipojuca, Pernambuco", type: "Refinery", status: "Partial Output", lat: -8.39, lng: -35.05 },
+        { name: "Ipiranga — Fortaleza Depot", city: "Fortaleza, Ceará", type: "Distribution Hub", status: "Supply Gaps", lat: -3.72, lng: -38.54 },
+        { name: "Raízen — Recife Terminal", city: "Recife, Pernambuco", type: "Import Terminal", status: "Supply Gaps", lat: -8.05, lng: -34.88 },
+        { name: "Posto BR — Natal Highway", city: "Natal, RN", type: "Retail Station", status: "Intermittent Supply", lat: -5.79, lng: -35.21 },
+      ],
+    },
+  ],
+};
+
+// Utility: calculate urgency color
+function getStatusColor(status) {
+  switch (status) {
+    case "CRITICAL": return "#e74c3c";
+    case "WATCH":    return "#f39c12";
+    case "NORMAL":   return "#27ae60";
+    default:         return "#95a5a6";
+  }
+}
+
+// Utility: sort countries by opportunity score (desc)
+function getOpportunities() {
+  return OIL_DATA.countries
+    .filter(c => c.dangoteOpportunity)
+    .sort((a, b) => b.opportunityScore - a.opportunityScore);
+}
+
+// Utility: get all closed/disrupted stations
+function getDisruptedStations() {
+  const results = [];
+  for (const country of OIL_DATA.countries) {
+    for (const station of country.stations) {
+      if (
+        station.status.toLowerCase().includes("clos") ||
+        station.status.toLowerCase().includes("gap") ||
+        station.status.toLowerCase().includes("dry") ||
+        station.status.toLowerCase().includes("disrupt") ||
+        station.status.toLowerCase().includes("partial") ||
+        station.status.toLowerCase().includes("reduced") ||
+        station.status.toLowerCase().includes("intermittent") ||
+        station.status.toLowerCase().includes("pressure") ||
+        station.status.toLowerCase().includes("risk") ||
+        station.status.toLowerCase().includes("constrain") ||
+        station.status.toLowerCase().includes("stretch")
+      ) {
+        results.push({ ...station, countryName: country.name, countryFlag: country.flag, countryId: country.id });
+      }
+    }
+  }
+  return results;
+}
