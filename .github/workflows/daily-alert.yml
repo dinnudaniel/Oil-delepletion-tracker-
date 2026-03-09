@@ -1,0 +1,30 @@
+name: Daily Oil Depletion Telegram Alert
+
+on:
+  schedule:
+    # Runs every day at 7:00 AM Lagos/Nigeria time (UTC+1 = 06:00 UTC)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Also allows you to trigger it manually from GitHub anytime
+
+jobs:
+  send-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Telegram notification script
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python alerts/notify.py
