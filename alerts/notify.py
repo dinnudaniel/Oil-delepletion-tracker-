@@ -30,15 +30,16 @@ targets_sorted = sorted(targets, key=lambda c: c["opportunityScore"], reverse=Tr
 
 # ── Helper: send a Telegram message ──────────────────────
 def send(text: str):
+    print(f"Sending to chat_id={CHAT_ID}...")
     resp = requests.post(API_URL, json={
         "chat_id":    CHAT_ID,
         "text":       text,
         "parse_mode": "HTML",
     })
+    print(f"Response {resp.status_code}: {resp.text}")
     if not resp.ok:
-        print(f"Telegram error: {resp.status_code} — {resp.text}")
-    else:
-        print("✅ Message sent.")
+        raise Exception(f"Telegram error: {resp.status_code} — {resp.text}")
+    print("✅ Message sent.")
 
 # ── Message 1: Daily Header ───────────────────────────────
 header = (
