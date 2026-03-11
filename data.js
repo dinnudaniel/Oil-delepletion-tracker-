@@ -240,12 +240,12 @@ const OIL_DATA = {
       dangoteOpportunity: true,
       notes: "Closest African market to Dangote. Ideal candidate for supply deal. Fuel crisis ongoing.",
       stations: [
-        { name: "BP Durban Refinery (Closing)", city: "Durban, KZN", type: "Refinery", status: "Shutdown Planned", lat: -29.88, lng: 31.02 },
-        { name: "Astron Energy Cape Town Refinery", city: "Cape Town, WC", type: "Refinery", status: "Reduced Output", lat: -33.93, lng: 18.49 },
-        { name: "FuelZone — Johannesburg South", city: "Johannesburg, GP", type: "Retail Station", status: "Dry Periods", lat: -26.27, lng: 27.86 },
-        { name: "Total Energies — Pretoria Depot", city: "Pretoria, GP", type: "Wholesale Depot", status: "Supply Gaps", lat: -25.75, lng: 28.19 },
-        { name: "Engen Kimberley Highway", city: "Kimberley, NC", type: "Retail Station", status: "Closed (Supply)", lat: -28.73, lng: 24.76 },
-        { name: "Puma Energy — Polokwane", city: "Polokwane, LP", type: "Retail Station", status: "Intermittent Supply", lat: -23.9, lng: 29.45 },
+        { name: "BP Durban Refinery (Closing)", city: "Durban, KZN", type: "Refinery", status: "Shutdown Planned", phone: "+27 860 111 400", email: "bpretail@bp.com", lat: -29.88, lng: 31.02 },
+        { name: "Astron Energy Cape Town Refinery", city: "Cape Town, WC", type: "Refinery", status: "Reduced Output", phone: "+27 21 460 5911", email: "info@astronenergy.co.za", lat: -33.93, lng: 18.49 },
+        { name: "FuelZone — Johannesburg South", city: "Johannesburg, GP", type: "Retail Station", status: "Dry Periods", phone: "+27 11 435 0200", email: "ops@fuelzone.co.za", lat: -26.27, lng: 27.86 },
+        { name: "Total Energies — Pretoria Depot", city: "Pretoria, GP", type: "Wholesale Depot", status: "Supply Gaps", phone: "+27 11 778 2000", email: "southafrica@totalenergies.com", lat: -25.75, lng: 28.19 },
+        { name: "Engen Kimberley Highway", city: "Kimberley, NC", type: "Retail Station", status: "Closed (Supply)", phone: "+27 31 268 5000", email: "engencs@engen.co.za", lat: -28.73, lng: 24.76 },
+        { name: "Puma Energy — Polokwane", city: "Polokwane, LP", type: "Retail Station", status: "Intermittent Supply", phone: "+27 11 844 4000", email: "info.southafrica@pumaenergy.com", lat: -23.9, lng: 29.45 },
       ],
     },
     {
@@ -3944,11 +3944,28 @@ const COUNTRY_DETAILS = {
     isOilProducer: false,
     productionNote: "No domestic oil production. Former Whitegate refinery closed 2014.",
     topOilBuyers: [
-      { name: "Maxol Group", type: "Importer & Retailer", contact: "www.maxol.ie", role: "~240 stations, Ireland's largest independent" },
-      { name: "Circle K Ireland", type: "Importer & Retailer", contact: "www.circlek.ie", role: "~440 stations nationwide" },
-      { name: "Fuinneamh Teo (Shannon LNG)", type: "LNG Terminal", contact: "www.shannonlng.com", role: "Strategic import terminal" },
+      { name: "Maxol Group", type: "Importer & Retailer", contact: "www.maxol.ie", phone: "+353 1 607 5100", email: "info@maxol.ie", role: "~240 stations, Ireland's largest independent" },
+      { name: "Circle K Ireland", type: "Importer & Retailer", contact: "www.circlek.ie", phone: "+353 1 490 0100", email: "ireland@circlek.com", role: "~440 stations nationwide" },
+      { name: "Fuinneamh Teo (Shannon LNG)", type: "LNG Terminal", contact: "www.shannonlng.com", phone: "+353 61 360 000", email: "info@shannonlng.com", role: "Strategic import terminal" },
     ],
     newGasStations: [],
+  },
+  "ZA": {
+    isOilProducer: true,
+    productionNote: "Produces some crude but refinery capacity collapsing. BP Durban closing, Astron reduced. Major import dependency growing.",
+    topOilBuyers: [
+      { name: "Sasol Oil (Pty) Ltd", type: "Producer & Importer", phone: "+27 10 344 5000", email: "investor.relations@sasol.com", role: "Largest domestic fuel producer. Also imports refined products." },
+      { name: "TotalEnergies South Africa", type: "Importer & Distributor", phone: "+27 11 778 2000", email: "southafrica@totalenergies.com", role: "Major retail distributor, 650+ service stations." },
+      { name: "Astron Energy (Pty) Ltd", type: "Refiner & Retailer", phone: "+27 21 460 5911", email: "info@astronenergy.co.za", role: "Operates Cape Town refinery & Caltex retail network." },
+      { name: "Engen Petroleum Ltd", type: "Importer & Retailer", phone: "+27 31 268 5000", email: "engencs@engen.co.za", role: "Major retail network across southern Africa." },
+      { name: "Puma Energy South Africa", type: "Wholesale Distributor", phone: "+27 11 844 4000", email: "info.southafrica@pumaenergy.com", role: "Aviation, mining & industrial fuel supply." },
+      { name: "Vivo Energy South Africa (Shell)", type: "Importer & Retailer", phone: "+27 11 996 6000", email: "info.southafrica@vivoenergy.com", role: "Shell-branded stations nationwide." },
+      { name: "Central Energy Fund (CEF)", type: "State Energy Body", phone: "+27 11 480 8000", email: "info@cef.org.za", role: "State entity managing strategic petroleum reserves." },
+    ],
+    newGasStations: [
+      { name: "Astron Energy Refinery Upgrade", location: "Cape Town, WC", status: "Underway", eta: "2026 Q4", phone: "+27 21 460 5911", email: "info@astronenergy.co.za" },
+      { name: "Sasol Secunda Synfuel Expansion", location: "Secunda, MP", status: "Planning Stage", eta: "2027", phone: "+27 10 344 5000", email: "investor.relations@sasol.com" },
+    ],
   },
 };
 

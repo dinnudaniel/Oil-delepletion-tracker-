@@ -769,7 +769,7 @@ async function tgSend(token, chatId, html) {
   if (!json.ok) throw new Error(json.description);
 }
 
-// ── Country detail report (matches notify.py HTML style) ─
+// ── Country contact report — emails & phones of oil companies ─
 async function sendToTelegram(countryId) {
   const cfg = getTgConfig();
   if (!cfg.token || !cfg.chatId) { openTelegramSettings(); return; }
@@ -778,138 +778,197 @@ async function sendToTelegram(countryId) {
          || (OIL_DATA.nonOfficialTerritories || []).find(x => x.id === countryId);
   if (!c) return;
 
-  const detail     = COUNTRY_DETAILS[countryId] || {};
-  const isProducer = detail.isOilProducer ?? c.isOilProducer ?? OIL_PRODUCERS.has(countryId);
-  const buyers     = detail.topOilBuyers   || c.topOilBuyers   || [];
-  const newSt      = detail.newGasStations || c.newGasStations  || [];
-  const nonOff     = c.official === false
-    ? `⚠️ <i>Non-official territory: ${c.officialNote}</i>\n\n` : "";
+  const detail  = COUNTRY_DETAILS[countryId] || {};
+  const buyers  = detail.topOilBuyers  || c.topOilBuyers  || [];
+  const newSt   = detail.newGasStations || c.newGasStations || [];
+  const stations = c.stations || [];
 
-  let msg = `⛽ <b>OIL DEPLETION TRACKER — ${c.flag} ${c.name}</b>\n`;
+  // Status badge
+  const badge = c.status === "CRITICAL" ? "🔴 CRITICAL" :
+                c.status === "WATCH"    ? "🟡 WATCH"    : "🟢 NORMAL";
+
+  let msg = `📋 <b>OIL CONTACT REPORT — ${c.flag} ${c.name}</b>\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += nonOff;
-  msg += `📍 <b>Continent:</b> ${c.continent}\n`;
-  msg += `🚦 <b>Status:</b> ${c.status}\n`;
-  msg += `⏳ <b>${c.reserveDays} days</b> of supply remaining\n`;
-  msg += `📉 <b>Reserve trend:</b> ${c.trend}\n`;
-  msg += `🏭 <b>Oil producer:</b> ${isProducer ? "YES" : "NO — 100% import dependent"}\n`;
-  msg += `📦 <b>Import dependency:</b> ${c.importDependency}%\n`;
-  msg += `📊 <b>Daily consumption:</b> ${c.dailyConsumption_bpd.toLocaleString()} BPD\n`;
-  msg += `🗄️ <b>Current reserves:</b> ${c.currentReserves_mb.toLocaleString()} M bbl\n`;
-  msg += `🎯 <b>Dangote opp. score:</b> ${c.opportunityScore}/100\n\n`;
-  msg += `⚠️ ${c.alert}\n`;
+  msg += `${badge} | ⏳ <b>${c.reserveDays} days</b> supply left | 📦 ${c.importDependency}% imported\n\n`;
 
-  const prodNote = detail.productionNote || c.productionNote;
-  if (prodNote) msg += `\n🛢️ <b>Production note:</b> ${prodNote}\n`;
-
+  // ── Oil Buyers / Importers with contacts ──────────────
   if (buyers.length) {
-    msg += `\n🏢 <b>Top oil buyers / importers:</b>\n`;
-    buyers.forEach(b => {
-      msg += `• <b>${b.name}</b> (${b.type})\n  Role: ${b.role}\n  📞 ${b.contact}\n`;
+    msg += `🏢 <b>OIL BUYERS &amp; IMPORTERS — CONTACT DIRECTORY</b>\n`;
+    msg += `─────────────────────\n`;
+    buyers.forEach((b, i) => {
+      msg += `<b>${i + 1}. ${b.name}</b>\n`;
+      msg += `   📌 ${b.type} — ${b.role}\n`;
+      if (b.phone) msg += `   📞 ${b.phone}\n`;
+      if (b.email) msg += `   📧 ${b.email}\n`;
+      if (!b.phone && !b.email && b.contact) msg += `   🌐 ${b.contact}\n`;
+      msg += `\n`;
     });
   }
 
+  // ── Tracked Facilities in need of supply ──────────────
+  const urgentStations = stations.filter(s =>
+    s.status && !["Operational","Normal","Active"].includes(s.status)
+  );
+  if (urgentStations.length) {
+    msg += `⛽ <b>TRACKED FACILITIES — NEED SUPPLY / AT RISK</b>\n`;
+    msg += `─────────────────────\n`;
+    urgentStations.forEach(s => {
+      const urgency = ["Shutdown Planned","Closed 2021","Closed 2014","Closed (Supply)","Import Only"]
+        .includes(s.status) ? "❌" :
+        ["Reduced Output","Reduced Capacity","At Risk","Financial Risk","Cost Pressure"].includes(s.status) ? "⚠️" : "🔶";
+      msg += `${urgency} <b>${s.name}</b>\n`;
+      msg += `   📍 ${s.city} · ${s.type}\n`;
+      msg += `   Status: ${s.status}\n`;
+      if (s.phone) msg += `   📞 ${s.phone}\n`;
+      if (s.email) msg += `   📧 ${s.email}\n`;
+      msg += `\n`;
+    });
+  }
+
+  // ── New stations / projects ────────────────────────────
   if (newSt.length) {
-    msg += `\n🚧 <b>New gas stations / projects in progress:</b>\n`;
+    msg += `🚧 <b>NEW PROJECTS / STATIONS</b>\n`;
+    msg += `─────────────────────\n`;
     newSt.forEach(s => {
-      msg += `• <b>${s.name}</b> — ${s.location}\n  ${s.status} | ETA: ${s.eta}\n  📞 ${s.contact}\n`;
+      msg += `• <b>${s.name}</b> — ${s.location}\n`;
+      msg += `  ${s.status} | ETA: ${s.eta}\n`;
+      if (s.phone) msg += `  📞 ${s.phone}\n`;
+      if (s.email) msg += `  📧 ${s.email}\n`;
+      if (!s.phone && !s.email && s.contact) msg += `  📞 ${s.contact}\n`;
     });
+    msg += `\n`;
   }
 
-  if (c.notes) msg += `\n💡 ${c.notes}\n`;
+  if (!buyers.length && !urgentStations.length && !newSt.length) {
+    msg += `ℹ️ No detailed contact data available for this country yet.\n\n`;
+    msg += `⚠️ ${c.alert}\n`;
+  }
 
-  msg += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `🌐 <a href="https://dinnudaniel.github.io/Oil-delepletion-tracker-/">Open Dashboard</a>`;
 
   try {
     await tgSend(cfg.token, cfg.chatId, msg);
-    alert(`✅ Report for ${c.name} sent to Telegram!`);
+    alert(`✅ Contact report for ${c.name} sent to Telegram!`);
   } catch (e) {
     alert(`❌ Telegram error: ${e.message}\n\nCheck your Bot Token and Chat ID in settings (⚙️).`);
   }
 }
 
-// ── Full daily briefing — mirrors all 4 messages in notify.py ─
+// ── Daily briefing — top 10 most urgent with contact info ─
 async function sendDailyBriefing() {
   const cfg = getTgConfig();
   if (!cfg.token || !cfg.chatId) { openTelegramSettings(); return; }
 
-  const countries = OIL_DATA.countries;
-  const critical  = countries.filter(c => c.status === "CRITICAL")
-                             .sort((a,b) => a.reserveDays - b.reserveDays);
-  const watch     = countries.filter(c => c.status === "WATCH")
-                             .sort((a,b) => a.reserveDays - b.reserveDays);
-  const targets   = countries.filter(c => c.dangoteOpportunity)
-                             .sort((a,b) => b.opportunityScore - a.opportunityScore);
-  const today     = new Date().toLocaleDateString("en-GB", { weekday:"long", day:"2-digit", month:"long", year:"numeric" });
+  const allCountries = [
+    ...(OIL_DATA.countries || []),
+    ...(OIL_DATA.nonOfficialTerritories || []),
+  ];
+
+  // Score urgency: CRITICAL=2, WATCH=1, NORMAL=0 — then by fewest days remaining
+  const urgencyRank = s => s.status === "CRITICAL" ? 2 : s.status === "WATCH" ? 1 : 0;
+  const top10 = allCountries
+    .filter(c => c.status === "CRITICAL" || c.status === "WATCH")
+    .sort((a, b) => urgencyRank(b) - urgencyRank(a) || a.reserveDays - b.reserveDays)
+    .slice(0, 10);
+
+  const today = new Date().toLocaleDateString("en-GB", {
+    weekday: "long", day: "2-digit", month: "long", year: "numeric"
+  });
 
   try {
-    // Message 1 — Header
+    // Message 1 — Header summary
     await tgSend(cfg.token, cfg.chatId,
-      `⛽ <b>OIL DEPLETION DAILY BRIEFING</b>\n` +
+      `📋 <b>DAILY OIL CONTACT BRIEFING</b>\n` +
       `📅 ${today}\n` +
       `━━━━━━━━━━━━━━━━━━━━━\n\n` +
-      `Good morning! Here is your daily oil intelligence report.\n\n` +
-      `🚨 <b>CRITICAL countries:</b> ${critical.length}\n` +
-      `⚠️  <b>WATCH countries:</b>    ${watch.length}\n` +
-      `🎯 <b>Dangote targets:</b>     ${targets.length}`
+      `Top 10 most urgent markets today.\n` +
+      `Contact these companies — they urgently need oil supply.\n\n` +
+      `🔴 CRITICAL markets tracked: ${allCountries.filter(c => c.status === "CRITICAL").length}\n` +
+      `🟡 WATCH markets tracked:    ${allCountries.filter(c => c.status === "WATCH").length}\n\n` +
+      `🏭 Dangote Refinery — 650,000 BPD ready to export.\n` +
+      `🌐 <a href="https://dinnudaniel.github.io/Oil-delepletion-tracker-/">Open Dashboard</a>`
     );
 
-    // Message 2 — Critical list
-    if (critical.length) {
-      let lines = `🚨 <b>CRITICAL — Below 45-Day Reserve Threshold</b>\n\n`;
-      critical.forEach(c => {
-        lines +=
-          `${c.flag} <b>${c.name}</b>\n` +
-          `   ⏳ <b>${c.reserveDays} days</b> of supply remaining\n` +
-          `   📦 Import dependency: ${c.importDependency}%\n` +
-          `   ⚠️ ${c.alert}\n\n`;
-      });
-      await tgSend(cfg.token, cfg.chatId, lines);
-    }
+    // Message 2 — Top 10 urgent contacts
+    let lines = `📞 <b>TOP 10 URGENT — CALL &amp; EMAIL NOW</b>\n`;
+    lines += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-    // Message 3 — Top Dangote opportunities
-    let oppLines = `🎯 <b>TOP DANGOTE DEAL OPPORTUNITIES TODAY</b>\n\n`;
-    targets.slice(0, 6).forEach((c, i) => {
-      const filled = Math.round(c.opportunityScore / 10);
-      const bar    = "🟧".repeat(filled) + "⬜".repeat(10 - filled);
-      oppLines +=
-        `<b>#${i+1} ${c.flag} ${c.name}</b>\n` +
-        `   Score: ${bar} ${c.opportunityScore}/100\n` +
-        `   ⏳ ${c.reserveDays} days left  |  📦 ${c.importDependency}% imported\n` +
-        `   💡 ${c.notes}\n\n`;
+    top10.forEach((c, i) => {
+      const detail   = COUNTRY_DETAILS[c.id] || {};
+      const buyers   = detail.topOilBuyers || c.topOilBuyers || [];
+      const badge    = c.status === "CRITICAL" ? "🔴" : "🟡";
+      const topBuyer = buyers[0];
+
+      lines += `<b>#${i + 1} ${badge} ${c.flag} ${c.name}</b>\n`;
+      lines += `   ⏳ ${c.reserveDays} days supply | 📦 ${c.importDependency}% imported\n`;
+
+      if (topBuyer) {
+        lines += `   🏢 <b>${topBuyer.name}</b> (${topBuyer.type})\n`;
+        if (topBuyer.phone) lines += `   📞 ${topBuyer.phone}\n`;
+        if (topBuyer.email) lines += `   📧 ${topBuyer.email}\n`;
+        if (!topBuyer.phone && !topBuyer.email && topBuyer.contact)
+          lines += `   🌐 ${topBuyer.contact}\n`;
+        lines += `   Role: ${topBuyer.role}\n`;
+      } else {
+        lines += `   ⚠️ ${c.alert}\n`;
+      }
+      lines += `\n`;
     });
-    await tgSend(cfg.token, cfg.chatId, oppLines);
 
-    // Message 4 — Watch list
-    if (watch.length) {
-      let wLines = `⚠️ <b>WATCH LIST — 45 to 89 Days Remaining</b>\n\n`;
-      watch.forEach(c => {
-        const tag = c.dangoteOpportunity ? "  🎯 Dangote target" : "";
-        wLines += `${c.flag} <b>${c.name}</b> — ${c.reserveDays} days${tag}\n`;
-      });
-      await tgSend(cfg.token, cfg.chatId, wLines);
-    }
+    await tgSend(cfg.token, cfg.chatId, lines);
 
-    // Message 5 — Brokerage action tip (top target)
-    if (targets.length) {
-      const t = targets[0];
-      await tgSend(cfg.token, cfg.chatId,
-        `💼 <b>TODAY'S BROKERAGE ACTION TIP</b>\n\n` +
-        `Focus on <b>${t.flag} ${t.name}</b> today.\n\n` +
-        `With only <b>${t.reserveDays} days</b> of supply left and ` +
-        `<b>${t.importDependency}%</b> import dependency, they urgently need a reliable supplier.\n\n` +
-        `📌 <b>Your move:</b>\n` +
-        `1. Contact ${t.name}'s national energy ministry or state oil company\n` +
-        `2. Present the supply gap data\n` +
-        `3. Propose a Dangote Refinery supply connection\n` +
-        `4. Structure your brokerage commission on the deal\n\n` +
-        `🏭 <b>Dangote Refinery</b> — 650,000 BPD capacity, ready to export.\n\n` +
-        `🌐 <a href="https://dinnudaniel.github.io/Oil-delepletion-tracker-/">Track your dashboard</a>`
+    // Message 3 — Full contact list for top 3 most critical countries
+    for (const c of top10.slice(0, 3)) {
+      const detail  = COUNTRY_DETAILS[c.id] || {};
+      const buyers  = detail.topOilBuyers || c.topOilBuyers || [];
+      const newSt   = detail.newGasStations || c.newGasStations || [];
+      const stations = (c.stations || []).filter(s =>
+        s.status && !["Operational","Normal","Active"].includes(s.status)
       );
+
+      if (!buyers.length && !stations.length) continue;
+
+      let cMsg = `📋 <b>FULL CONTACTS — ${c.flag} ${c.name}</b>\n`;
+      cMsg += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+      if (buyers.length) {
+        cMsg += `🏢 <b>OIL BUYERS:</b>\n`;
+        buyers.forEach((b, i) => {
+          cMsg += `<b>${i + 1}. ${b.name}</b>\n`;
+          cMsg += `   ${b.type} — ${b.role}\n`;
+          if (b.phone) cMsg += `   📞 ${b.phone}\n`;
+          if (b.email) cMsg += `   📧 ${b.email}\n`;
+          if (!b.phone && !b.email && b.contact) cMsg += `   🌐 ${b.contact}\n`;
+          cMsg += `\n`;
+        });
+      }
+
+      if (stations.length) {
+        cMsg += `⛽ <b>FACILITIES IN NEED:</b>\n`;
+        stations.forEach(s => {
+          cMsg += `• <b>${s.name}</b> — ${s.status}\n`;
+          if (s.phone) cMsg += `  📞 ${s.phone}\n`;
+          if (s.email) cMsg += `  📧 ${s.email}\n`;
+          cMsg += `\n`;
+        });
+      }
+
+      if (newSt.length) {
+        cMsg += `🚧 <b>NEW PROJECTS:</b>\n`;
+        newSt.forEach(s => {
+          cMsg += `• <b>${s.name}</b> — ${s.location} | ETA: ${s.eta}\n`;
+          if (s.phone) cMsg += `  📞 ${s.phone}\n`;
+          if (s.email) cMsg += `  📧 ${s.email}\n`;
+          if (!s.phone && !s.email && s.contact) cMsg += `  📞 ${s.contact}\n`;
+          cMsg += `\n`;
+        });
+      }
+
+      await tgSend(cfg.token, cfg.chatId, cMsg);
     }
 
-    alert("✅ Full daily briefing sent to Telegram (5 messages)!");
+    alert("✅ Daily contact briefing sent to Telegram!");
   } catch (e) {
     alert(`❌ Telegram error: ${e.message}\n\nCheck your Bot Token and Chat ID in settings (⚙️).`);
   }
