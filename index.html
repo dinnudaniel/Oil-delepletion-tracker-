@@ -70,9 +70,11 @@
 
       <!-- Charts Row -->
       <div class="charts-row">
-        <div class="chart-card">
-          <h3>Reserve Days by Country</h3>
-          <canvas id="barChart" height="280"></canvas>
+        <div class="chart-card chart-card-bar">
+          <h3>Reserve Days by Country <span class="chart-scroll-hint">· scroll to see all</span></h3>
+          <div class="bar-chart-scroll" id="barChartScroll">
+            <canvas id="barChart"></canvas>
+          </div>
         </div>
         <div class="chart-card">
           <h3>Deal Opportunity Score (Dangote Targets)</h3>

@@ -117,10 +117,8 @@ function renderKPIs() {
 
 // ─── Bar Chart ────────────────────────────────────────
 function renderBarChart() {
-  // Show only the 40 most critical countries to keep chart readable
-  const sorted = [...OIL_DATA.countries]
-    .sort((a, b) => a.reserveDays - b.reserveDays)
-    .slice(0, 40);
+  // Show all countries sorted by reserve days (lowest = most critical at top)
+  const sorted = [...OIL_DATA.countries].sort((a, b) => a.reserveDays - b.reserveDays);
   const labels  = sorted.map(c => `${c.flag} ${c.name}`);
   const data    = sorted.map(c => c.reserveDays);
   const colors  = sorted.map(c =>
@@ -128,7 +126,13 @@ function renderBarChart() {
     c.status === "WATCH"    ? "#f39c12" : "#27ae60"
   );
 
-  const ctx = document.getElementById("barChart").getContext("2d");
+  // Set canvas height dynamically: 24px per country row
+  const rowHeight = 24;
+  const canvas = document.getElementById("barChart");
+  canvas.height = sorted.length * rowHeight + 20;
+  canvas.style.height = canvas.height + "px";
+
+  const ctx = canvas.getContext("2d");
   if (barChartInstance) barChartInstance.destroy();
   barChartInstance = new Chart(ctx, {
     type: "bar",
@@ -138,17 +142,19 @@ function renderBarChart() {
         label: "Reserve Days",
         data,
         backgroundColor: colors,
-        borderRadius: 4,
+        borderRadius: 3,
+        barThickness: 16,
       }]
     },
     options: {
-      responsive: true,
+      indexAxis: "y",          // Horizontal bars — names on the left
+      responsive: false,        // We control size manually
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.raw} days remaining`,
+            label: ctx => ` ${ctx.raw} days of supply remaining`,
           }
         }
       },
@@ -156,14 +162,18 @@ function renderBarChart() {
         x: {
           ticks: { color: "#7d8590", font: { size: 10 } },
           grid: { color: "#21262d" },
+          title: { display: true, text: "Days of Supply Remaining", color: "#7d8590" },
         },
         y: {
-          ticks: { color: "#7d8590" },
+          ticks: {
+            color: "#c9d1d9",
+            font: { size: 10 },
+            autoSkip: false,    // Show every label
+          },
           grid: { color: "#21262d" },
-          title: { display: true, text: "Days of Supply", color: "#7d8590" }
         }
       },
-      animation: { duration: 500 }
+      animation: { duration: 400 }
     }
   });
 }
