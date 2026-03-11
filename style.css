@@ -82,19 +82,6 @@ body {
 }
 .btn-refresh:hover { background: #3fb950; }
 
-/* ===== ALERT BANNER ===== */
-.alert-banner {
-  background: linear-gradient(90deg, #4d1818, #2d1b0e);
-  border-bottom: 2px solid var(--critical);
-  padding: 0.55rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.85rem;
-  color: #ffc0c0;
-  overflow: hidden;
-}
-.alert-icon { font-size: 1rem; flex-shrink: 0; }
 
 /* ===== MAIN LAYOUT ===== */
 .main-layout {

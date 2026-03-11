@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderAll() {
-  renderAlertBanner();
   renderKPIs();
   renderBarChart();
   renderCountryCards();
@@ -74,14 +73,6 @@ function startCountdown() {
 
 function resetCountdown() {
   countdownSeconds = 86400;
-}
-
-// ─── Alert Banner ─────────────────────────────────────
-function renderAlertBanner() {
-  const critical = OIL_DATA.countries.filter(c => c.status === "CRITICAL");
-  const names = critical.map(c => `${c.flag} ${c.name} (${c.reserveDays} days)`).join(" · ");
-  document.getElementById("alertText").textContent =
-    `CRITICAL ALERTS: ${critical.length} countries below 45-day reserve threshold — ${names}`;
 }
 
 // ─── KPI Cards ────────────────────────────────────────
