@@ -745,6 +745,24 @@ function openModal(countryId) {
       <div class="modal-notes-box">${c.notes}</div>
     </div>` : "";
 
+  // Operational Challenges section
+  const oc = OPERATIONAL_CHALLENGES[countryId] || null;
+  const ocRiskColor = { "EXTREME":"#c0392b","PROHIBITED":"#7d0000","HIGH":"#e67e22","MEDIUM":"#d4ac0d","LOW":"#27ae60","LOW-MEDIUM":"#a0a020" };
+  const operationalHTML = oc ? `
+    <div class="modal-section op-challenges-section" style="border:2px solid ${ocRiskColor[oc.riskLevel]||'#555'};background:#1a1008;border-radius:10px;padding:14px;margin-top:12px;">
+      <h4 style="margin:0 0 6px;color:${ocRiskColor[oc.riskLevel]||'#ccc'};">⚡ Operational Ground Reality <span style="font-size:0.75rem;font-weight:400;background:${ocRiskColor[oc.riskLevel]}33;border:1px solid ${ocRiskColor[oc.riskLevel]};padding:2px 8px;border-radius:12px;margin-left:6px;">${oc.riskLevel} RISK</span></h4>
+      <div style="font-size:0.88rem;color:#f0c040;font-style:italic;margin-bottom:12px;line-height:1.4;">${oc.headline}</div>
+      ${oc.challenges.map(ch=>`
+        <div style="margin-bottom:12px;padding:10px;background:#0d0d0d;border-radius:8px;border-left:3px solid ${ocRiskColor[oc.riskLevel]||'#555'};">
+          <div style="font-weight:700;font-size:0.87rem;color:#fff;margin-bottom:4px;">${ch.icon} ${ch.title}</div>
+          <div style="font-size:0.82rem;color:#ccc;line-height:1.55;">${ch.body}</div>
+        </div>`).join("")}
+      <div style="margin-top:10px;padding:10px;background:#0a1a0a;border-radius:8px;border:1px solid #27ae60;">
+        <div style="font-size:0.8rem;font-weight:700;color:#27ae60;margin-bottom:4px;">💼 Dangote Strategy Advice</div>
+        <div style="font-size:0.82rem;color:#aed6b0;line-height:1.55;">${oc.dangoteAdvice}</div>
+      </div>
+    </div>` : "";
+
   // Sanctions / Embargo section
   const si = SANCTIONS_INFO[countryId] || null;
   const sanctionsBgMap = { "🔴": "#2d0a0a", "🟠": "#2d1a00", "🟡": "#1e1e00", "🟢": "#0a1a0a" };
@@ -781,6 +799,7 @@ function openModal(countryId) {
     <div class="modal-alert-box">⚠️ ${c.alert}</div>
 
     ${sanctionsHTML}
+    ${operationalHTML}
 
     <div class="modal-section">
       <h4>🛢️ Oil Production Status</h4>

@@ -5075,3 +5075,692 @@ const SANCTIONS_INFO = {
     summary:"Falkland Islands is a UK overseas territory with open trade.",
     details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
 };
+
+// ─── OPERATIONAL CHALLENGES — Ground-Reality Intelligence ───────────────────
+// Beyond sanctions: infrastructure, politics, FX, gangs, diplomacy, payment risk
+// This is what actually stops a deal from closing, even when law permits it.
+const OPERATIONAL_CHALLENGES = {
+
+  HT: {
+    riskLevel: "EXTREME",
+    headline: "Gang Control of Fuel Infrastructure — Not a Sanctions Problem",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Varreux Terminal Under Gang Control",
+        body: "The Varreux fuel terminal — Haiti's single largest petroleum import point — has been repeatedly blockaded and seized by the G9 coalition led by Jimmy 'Barbecue' Chérizier. In 2022, fuel shipments sat in port for weeks unable to be distributed. As of 2025, gang control of roads to and from the terminal remains a live operational risk. Dangote shipments arriving at Port-au-Prince can be physically trapped."
+      },
+      {
+        icon: "💸",
+        title: "USD Payment Capacity Collapse",
+        body: "Haiti's foreign currency reserves are critically depleted. The Haitian gourde has lost over 80% of its value since 2018. Fuel importers struggle to source USD for payment. Pre-payment or letter of credit (L/C) through a Haitian bank is unreliable — most Haitian commercial banks are under severe liquidity stress."
+      },
+      {
+        icon: "⛽",
+        title: "PetroCaribe Collapse — No State Fuel Program",
+        body: "Haiti previously relied on Venezuela's PetroCaribe program for heavily subsidised fuel (paid over 25 years). PetroCaribe collapsed in 2018 when Venezuela's economy imploded. Haiti now buys on the open market with no state subsidy, no strategic reserve, and no government fuel authority capable of executing large import contracts."
+      },
+      {
+        icon: "🏛️",
+        title: "No Functioning Government Counterparty",
+        body: "Haiti has been under a transitional Presidential Council since 2024 with no elected president or parliament. There is no stable government entity capable of signing and guaranteeing a national fuel supply agreement. Dangote must work through private vetted importers — not the state."
+      },
+      {
+        icon: "🚢",
+        title: "Port & Logistics Degradation",
+        body: "Port-au-Prince port infrastructure is underfunded and congested. Cap-Haïtien in the north is an alternative entry point but has lower throughput capacity. Distribution inland is controlled by armed groups demanding transit fees ('koupay')."
+      }
+    ],
+    dangoteAdvice: "Haiti is legally open for Dangote supply but operationally EXTREME risk. Strategy: partner only with pre-vetted private Haitian fuel importers; require 100% pre-payment in USD to a foreign bank account before loading; use a private security-assessed discharge plan; consider Cap-Haïtien as alternative port to Varreux."
+  },
+
+  IN: {
+    riskLevel: "LOW",
+    headline: "India Buys Russian Oil Freely — Modi's US Energy Talks Are Commercial Deals, Not Permission",
+    challenges: [
+      {
+        icon: "🛢️",
+        title: "India's Russian Oil Purchases Are Sovereign — No Legal Block",
+        body: "India has NOT sanctioned Russia. Since February 2022, Indian refiners (IOC, BPCL, HPCL, Reliance) have massively INCREASED purchases of Russian Urals crude — reaching 1.8–2 million BPD by 2024, making Russia India's #1 oil supplier. India does this freely under its sovereign trade policy. No US or UN law prohibits India from buying Russian oil."
+      },
+      {
+        icon: "🤝",
+        title: "Why Modi Seeks US Energy Deals — It's Diplomacy, Not Permission",
+        body: "When Modi visits Washington and discusses US oil/LNG purchases, this is commercial and diplomatic trade negotiation — NOT India asking for 'permission' to buy oil. Under Trump's 2025 pressure to reduce the US-India trade deficit, India pledged to increase purchases of American LNG and crude. This is India choosing to diversify suppliers and satisfy US trade demands — while still buying Russian oil simultaneously. Both can happen at once."
+      },
+      {
+        icon: "💡",
+        title: "The Real Dynamic: India Is Playing All Sides",
+        body: "India's energy strategy is deliberate: buy discounted Russian crude (saving billions), while also signing US LNG deals (securing long-term supply and political goodwill), and buying from Middle East (OPEC+ reliability). India does not need anyone's permission. Modi's energy diplomacy is about commercial leverage, not legal compliance."
+      },
+      {
+        icon: "⚠️",
+        title: "What India DOES Face: Secondary Sanction Scrutiny",
+        body: "While there is no law blocking India from buying Russian oil, the US has issued warnings that any country helping Russia evade the G7 price cap ($60/bbl) could face secondary sanctions. India's purchases of Russian oil ABOVE the price cap have drawn quiet US pressure — but no formal sanctions have been imposed on India. This is a political risk, not a current legal one."
+      },
+      {
+        icon: "🏭",
+        title: "For Dangote: India Is Open and Competitive",
+        body: "India is one of the world's largest refined product importers and a key Dangote target market. Dangote competes with discounted Russian crude into Indian refineries. The competitive angle is pricing, not law. Indian refiners are pragmatic — if Dangote offers better logistics or crack spread economics than Russia for specific products, deals are possible."
+      }
+    ],
+    dangoteAdvice: "India is fully open for Dangote. No legal barriers. Commercial challenge only: Indian refiners are price-savvy and buy Russian crude at a significant discount. Dangote's pitch must be on refined products (diesel, jet fuel) that India needs and on strategic supply diversification arguments."
+  },
+
+  LB: {
+    riskLevel: "HIGH",
+    headline: "Banking System Has Collapsed — Payment Is the Core Problem",
+    challenges: [
+      {
+        icon: "🏦",
+        title: "Lebanese Banking System Effectively Frozen",
+        body: "Since the October 2019 financial crisis, Lebanese banks have imposed capital controls — citizens and businesses cannot freely transfer USD abroad. Most Lebanese bank accounts are frozen or pay out in devalued 'lollars' (Lebanese pound-denominated). A fuel importer cannot wire USD from a Lebanese bank to pay Dangote."
+      },
+      {
+        icon: "⛽",
+        title: "Fuel Sector Relies on Black Market and Informal Channels",
+        body: "Lebanon's fuel sector has largely shifted to informal imports coordinated through private networks, some linked to Hezbollah (which operates its own fuel distribution). Formal international contracts are difficult to execute."
+      },
+      {
+        icon: "💡",
+        title: "Subsidies Removed — Market Prices Now Apply",
+        body: "The Central Bank of Lebanon ended fuel subsidies in 2021. Fuel now trades at market prices in USD but payment infrastructure remains broken."
+      }
+    ],
+    dangoteAdvice: "Lebanon: require payment from a non-Lebanese foreign correspondent bank. Only deal with importers who can demonstrate USD liquidity held outside Lebanon. Avoid any entity with Hezbollah connections (OFAC SDN risk)."
+  },
+
+  YE: {
+    riskLevel: "EXTREME",
+    headline: "Country Split — Houthi Port Control Blocks Most Fuel Entry",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Hodeidah Port Under Houthi (SDGT) Control",
+        body: "Hodeidah, Yemen's largest fuel import port, is controlled by Houthi forces — a US-designated terrorist organisation since January 2024. Supplying fuel through Hodeidah risks transferring goods to a sanctioned terrorist entity."
+      },
+      {
+        icon: "⚓",
+        title: "Aden Port (Government-Controlled) Is the Legal Route",
+        body: "The internationally-recognised Yemeni government controls Aden. Fuel can be legally imported through Aden, Mukalla, and Nishtun ports under ROYG authority. UN humanitarian fuel shipments also enter through UN-vetted mechanisms."
+      },
+      {
+        icon: "🚢",
+        title: "Red Sea Houthi Attacks — Shipping Insurance Crisis",
+        body: "Since late 2023, Houthi forces have attacked commercial vessels in the Red Sea. War risk insurance premiums for vessels transiting the Red Sea/Gulf of Aden have multiplied by 5–10x. Many shipping companies now avoid the route entirely, adding 2–3 weeks via Cape of Good Hope."
+      }
+    ],
+    dangoteAdvice: "Yemen: ONLY supply via ROYG-controlled Aden port or UN-vetted channels. NEVER route through Hodeidah. Obtain specialist war risk insurance and use experienced Red Sea maritime security consultants."
+  },
+
+  LY: {
+    riskLevel: "HIGH",
+    headline: "Two Rival Governments — Must Deal with the UN-Recognised One Only",
+    challenges: [
+      {
+        icon: "🏛️",
+        title: "Split Authority: GNU (Tripoli) vs GNS (Benghazi)",
+        body: "Libya has two rival governments: the GNU (Government of National Unity) in Tripoli, recognised by the UN, and the GNS (Government of National Stability) in Benghazi, backed by General Haftar's LNA. Fuel contracts signed with the wrong faction create legal exposure."
+      },
+      {
+        icon: "🛢️",
+        title: "National Oil Corporation (NOC) — Only Legitimate Counterparty",
+        body: "The UN-recognised NOC (Tripoli) is the only legitimate counterparty for oil trade. Parallel oil sales by eastern factions (via Hariga terminal, Benghazi) are considered illegal under UN Security Council resolutions."
+      },
+      {
+        icon: "⚓",
+        title: "Port Access Disrupted by Armed Groups",
+        body: "Oil ports (Es Sider, Ras Lanuf, Zueitina) are frequently shut down by armed militias demanding payments or political concessions. Vessel scheduling for Libya requires real-time security assessment."
+      }
+    ],
+    dangoteAdvice: "Libya: deal ONLY with NOC (Tripoli) or GNU-authorised entities. Verify current port security status before each shipment. Require payment via a European or Gulf bank intermediary, not a Libyan bank."
+  },
+
+  SD: {
+    riskLevel: "EXTREME",
+    headline: "Active Civil War (SAF vs RSF) — Physical and Financial Infrastructure Destroyed",
+    challenges: [
+      {
+        icon: "⚔️",
+        title: "Civil War Since April 2023",
+        body: "Sudan has been in active civil war between the Sudanese Armed Forces (SAF) and the Rapid Support Forces (RSF) since April 2023. Khartoum, the capital, has been a battleground. Oil infrastructure, fuel depots, and distribution networks have been heavily damaged."
+      },
+      {
+        icon: "🏦",
+        title: "Banking System Collapse",
+        body: "Sudan's banking system is non-functional in many areas. SWIFT transactions are severely restricted. Payment for a fuel shipment requires routing through third-country intermediaries."
+      },
+      {
+        icon: "🚛",
+        title: "Port Sudan — Only Functioning Entry Point",
+        body: "Port Sudan on the Red Sea remains the primary (and largely only) functioning import point. It is overcrowded and capacity-constrained, with massive humanitarian aid also competing for berths."
+      }
+    ],
+    dangoteAdvice: "Sudan: operationally near-impossible for a commercial deal right now. Any fuel supply should be structured through UN humanitarian channels. Hold for post-conflict commercial engagement."
+  },
+
+  MM: {
+    riskLevel: "HIGH",
+    headline: "Military Controls Fuel Infrastructure — MOGE Is Sanctioned",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Tatmadaw Controls Thilawa Port and Fuel Terminals",
+        body: "Myanmar's military (Tatmadaw) controls Thilawa port and the main fuel import infrastructure. Myanmar Oil and Gas Enterprise (MOGE) — which manages fuel — is on the OFAC SDN list. Any payment that reaches MOGE is a sanctions violation."
+      },
+      {
+        icon: "💸",
+        title: "Kyat Currency Crisis",
+        body: "The Myanmar kyat has lost 60%+ of its value since the 2021 coup. USD is scarce. Fuel importers struggle to source foreign currency for payment. The Central Bank of Myanmar has imposed capital controls."
+      },
+      {
+        icon: "🏴",
+        title: "Multiple Competing Authorities",
+        body: "The National Unity Government (NUG — resistance) controls portions of the country, while the SAC (military junta) controls cities. Both are 'claiming' to be the government. International trade recognition only applies to SAC, which is the sanctioned party."
+      }
+    ],
+    dangoteAdvice: "Myanmar: only deal with demonstrably private civilian importers with no MOGE/military connection. Conduct OFAC screening on every entity. Payment must be verified to not pass through sanctioned Tatmadaw-linked banks."
+  },
+
+  VE: {
+    riskLevel: "EXTREME",
+    headline: "PDVSA Collapse + US Sanctions = Venezuela Has Oil But Can't Process It",
+    challenges: [
+      {
+        icon: "🛢️",
+        title: "The Paradox: World's Largest Reserves, Chronic Fuel Shortage",
+        body: "Venezuela holds the world's largest proven oil reserves yet suffers chronic fuel shortages. PDVSA, the state oil company, has collapsed due to mismanagement, US sanctions, and brain drain. Refineries operate at <30% capacity. Venezuela actually imports refined fuel from Iran and Russia — the irony of the world's largest oil nation needing fuel imports."
+      },
+      {
+        icon: "🚫",
+        title: "PDVSA on OFAC SDN List — Secondary Sanction Risk Is Real",
+        body: "PDVSA was designated an SDN in 2019. Any company that does business with PDVSA risks being cut off from the US financial system. The Chevron General License is a narrow exception for specific US companies only — it does NOT apply to Dangote."
+      },
+      {
+        icon: "🔄",
+        title: "2024 Sanctions Easing — Then Re-Imposed",
+        body: "The US granted a 6-month sanctions relief in late 2023 (OFAC General License 44) tied to democratic election conditions. Maduro violated those conditions; US re-imposed sanctions in April 2024. The situation is politically volatile and could change again."
+      }
+    ],
+    dangoteAdvice: "Venezuela: DO NOT engage without specific OFAC license authorization. Monitor OFAC GL announcements. If sanctions are eased in the future, Venezuela could be a major Dangote market given its domestic refining collapse."
+  },
+
+  AF: {
+    riskLevel: "EXTREME",
+    headline: "Taliban Controls Everything — Humanitarian Channels Are the Only Legal Route",
+    challenges: [
+      {
+        icon: "🏴",
+        title: "Taliban (SDGT) Controls All Fuel Infrastructure",
+        body: "The Taliban seized Kabul in August 2021. All government ministries, ports of entry, and customs are now controlled by the Taliban, which is a US-designated terrorist organisation. Fuel paid to government entities = payment to sanctioned terrorists."
+      },
+      {
+        icon: "🌍",
+        title: "Landlocked — Entry via Pakistan or Iran Only",
+        body: "Afghanistan is landlocked. Fuel enters via Pakistan (Torkham/Spin Boldak crossings) or Iran (Milak crossing) or Central Asia (Hairatan via Uzbekistan). Each crossing is Taliban-controlled at the Afghan end."
+      },
+      {
+        icon: "💡",
+        title: "Humanitarian Exemption Is Real — But Narrow",
+        body: "OFAC General License 20 and UN Security Council Resolution 2615 explicitly permit sale of fuel for civilian humanitarian purposes. UN agencies, NGOs, and vetted private importers can legally import fuel. The money cannot flow to Taliban officials."
+      }
+    ],
+    dangoteAdvice: "Afghanistan: ONLY through UN/NGO-vetted humanitarian channels. Structure contracts with UN-approved Afghan private importers. Payment must demonstrably not pass through Taliban-controlled accounts. Legal counsel mandatory."
+  },
+
+  SO: {
+    riskLevel: "HIGH",
+    headline: "Al-Shabaab Territory Control + Informal Economy Dominates",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Al-Shabaab Controls Large Rural Areas",
+        body: "Al-Shabaab (Al-Qaeda affiliate, SDGT) controls significant portions of south-central Somalia including road checkpoints on fuel distribution routes. Fuel delivered to Mogadishu can be taxed or seized by Al-Shabaab during distribution."
+      },
+      {
+        icon: "🏦",
+        title: "Hawala-Based Economy — No Formal Banking",
+        body: "Somalia's financial system is largely hawala-based (informal money transfer). Formal USD bank transfers are extremely difficult. Payment for fuel relies on hawala networks — which require careful AML/CTF screening."
+      },
+      {
+        icon: "⚓",
+        title: "Mogadishu Port Improving but Fragile",
+        body: "Mogadishu port has undergone Turkish-funded rehabilitation but remains limited in capacity and subject to periodic security incidents. Berbera (Somaliland) and Bossaso (Puntland) are alternative entry points with different political authorities."
+      }
+    ],
+    dangoteAdvice: "Somalia: screen all buyers against OFAC/UN consolidated lists. Use pre-payment via a third-country correspondent bank. Mogadishu port is preferred. Consider Somaliland (Berbera) as a more stable entry point — Somaliland has no Al-Shabaab presence and functioning government."
+  },
+
+  SS: {
+    riskLevel: "HIGH",
+    headline: "Oil Producer With No Refining Capacity + Renewed Civil Conflict Risk",
+    challenges: [
+      {
+        icon: "🛢️",
+        title: "Exports Crude, Imports Everything Refined",
+        body: "South Sudan is an oil producer (Unity and Heglig fields) but has zero refining capacity. All petroleum products (diesel, petrol, kerosene) are imported — primarily via Uganda and Kenya. This is a strong Dangote market but logistics are landlocked."
+      },
+      {
+        icon: "⚔️",
+        title: "Political Instability — Renewed Conflict Risk 2024–2025",
+        body: "The 2018 peace agreement between Kiir and Machar has frayed. Fighting resumed in parts of Upper Nile and Jonglei states in 2024. Political instability affects payment guarantee and the security of inland distribution."
+      },
+      {
+        icon: "💸",
+        title: "FX Shortage — Oil Revenues Monopolised by Government",
+        body: "South Sudan's oil revenues are controlled by the government but do not flow to the broader economy. Private importers struggle to access USD. The South Sudanese pound has hyperinflated."
+      }
+    ],
+    dangoteAdvice: "South Sudan: viable Dangote market via Uganda (Kampala) route or Kenya (Mombasa) corridor. Require USD pre-payment. Screen government-linked buyers for targeted OFAC sanctions. Monitor political stability calendar."
+  },
+
+  ZW: {
+    riskLevel: "MEDIUM",
+    headline: "USD Shortage + Informal Market Controls Distribution",
+    challenges: [
+      {
+        icon: "💸",
+        title: "Zimbabwe Dollar Hyperinflation — USD Is the Real Currency",
+        body: "Zimbabwe officially uses USD and other currencies (ZiG introduced 2024) but USD cash is perpetually scarce. The ZiG gold-backed currency lost value rapidly after launch. Fuel is priced and expected to be paid in USD but buyers often cannot source enough."
+      },
+      {
+        icon: "⛽",
+        title: "Fuel Black Market Is Large",
+        body: "A significant share of Zimbabwe's fuel market is informal — cross-border imports from South Africa, Mozambique, Zambia by small traders. This makes it hard to execute large formal supply contracts through official channels."
+      },
+      {
+        icon: "🏦",
+        title: "Banking Restrictions Limit Large Transfers",
+        body: "Zimbabwe's Reserve Bank imposes foreign currency allocation controls. Large USD transfers for fuel imports require RBZ approval — which can be delayed or denied."
+      }
+    ],
+    dangoteAdvice: "Zimbabwe: structure deals through South African-banked Zimbabwean fuel importers who can make USD payment from offshore accounts. Avoid ZiG-denominated contracts. Verify buyers against OFAC/EU Zimbabwe lists."
+  },
+
+  CU: {
+    riskLevel: "HIGH",
+    headline: "US Embargo Means No USD — Barter, Euro, or Yuan Only",
+    challenges: [
+      {
+        icon: "💵",
+        title: "USD Completely Blocked — No US Dollar Transactions",
+        body: "Under the Cuban Assets Control Regulations (CACR), any USD-denominated transaction with Cuba — even between two non-US entities — is prohibited if it clears through a US correspondent bank. Since virtually all global USD transactions pass through US banks, USD payment for Cuba is effectively blocked."
+      },
+      {
+        icon: "🔄",
+        title: "How Cuba Pays for Oil — Russia, China, Venezuela Barter",
+        body: "Cuba receives oil from Russia, Venezuela, and Mexico in exchange for medical services, sugar, nickel, and political alignment — often barter deals, not cash. Cuba's USD-earning capacity (tourism) collapsed post-COVID and has not fully recovered."
+      },
+      {
+        icon: "⛽",
+        title: "Chronic Fuel Crisis — Real Demand Is Huge",
+        body: "Cuba has suffered extreme fuel shortages since 2019. Blackouts of 12–20 hours/day became common by 2023. The demand is real and urgent — but payment mechanism is the core challenge."
+      }
+    ],
+    dangoteAdvice: "Cuba: Nigeria-Cuba trade is NOT legally prohibited under Nigerian or Cuban law. But payment must be in euros, yuan, or barter. Any USD transaction is blocked by US extraterritorial sanctions. Dangote would need to: (1) settle in euros via European bank with no US nexus, (2) accept a barter/commodity deal, or (3) wait for US policy change. High complexity — specialist trade finance lawyer required."
+  },
+
+  KP: {
+    riskLevel: "PROHIBITED",
+    headline: "UN Hard Cap — Any Supply Beyond 500,000 BBL/Year Is a UN Law Violation",
+    challenges: [
+      {
+        icon: "🚫",
+        title: "Total International Isolation",
+        body: "North Korea has been under comprehensive UN, US, EU, UK, and allied sanctions for decades. The 2017 UN resolutions specifically cap petroleum imports. North Korea receives coal, food aid, and smuggled oil via ship-to-ship transfers (primarily from China and Russia, violating UN sanctions themselves)."
+      },
+      {
+        icon: "⛵",
+        title: "Ship-to-Ship Transfer Evasion",
+        body: "North Korea receives illicit oil via ship-to-ship transfers at sea, often using AIS-spoofing (falsifying vessel location data) to hide the transactions. Any vessel doing ship-to-ship with a North Korean vessel is committing a UN sanctions violation."
+      },
+      {
+        icon: "💡",
+        title: "No Banking, No SWIFT, No Legal Payment Channel",
+        body: "North Korea is completely excluded from SWIFT and international banking. There is no legal payment mechanism. All transactions are via smuggling networks."
+      }
+    ],
+    dangoteAdvice: "North Korea: ABSOLUTE PROHIBITION. Zero engagement. Any supply constitutes a UN Security Council violation exposing Dangote to global sanctions. Monitor vessel AIS data to ensure Dangote-chartered tankers are not involved in DPRK ship-to-ship transfers."
+  },
+
+  IR: {
+    riskLevel: "PROHIBITED",
+    headline: "NIOC Is on OFAC SDN List — Engaging Risks Dangote's Entire International Banking Access",
+    challenges: [
+      {
+        icon: "🏦",
+        title: "The 'Correspondent Banking' Nuclear Option",
+        body: "The US has cut Iran off from the global dollar-clearing system. Any non-US bank that processes a transaction involving Iran (oil or otherwise) risks being cut off from US correspondent banking — effectively losing access to the entire USD-denominated global financial system. This is why even China and India are careful about how they pay for Iranian oil (using yuan, rupees, barter)."
+      },
+      {
+        icon: "🛢️",
+        title: "Iran Evades via 'Dark Fleet' Tankers",
+        body: "Iran ships oil using a fleet of ageing tankers with AIS transponders turned off ('dark fleet'). These vessels use falsified paperwork and multiple ship-to-ship transfers to obscure origin. If Dangote vessels come into contact with dark-fleet vessels, there is contamination risk."
+      },
+      {
+        icon: "🔄",
+        title: "Potential Future: Nuclear Deal Could Change Everything",
+        body: "If a new Iran nuclear deal (JCPOA successor) is reached, sanctions could be lifted rapidly. Iranian oil exports could flood the market, affecting Dangote's pricing. This is a market risk to monitor, not a current opportunity."
+      }
+    ],
+    dangoteAdvice: "Iran: ZERO ENGAGEMENT. The risk of losing international banking access is existential for Dangote. Monitor Iran nuclear deal negotiations — if sanctions are lifted, Iran becomes a massive market for refined products given its refining underinvestment."
+  },
+
+  SY: {
+    riskLevel: "PROHIBITED",
+    headline: "Caesar Act Imposes Secondary Sanctions on Anyone Providing Energy to Assad Government",
+    challenges: [
+      {
+        icon: "⚖️",
+        title: "Caesar Act — US Law With Global Reach",
+        body: "The Caesar Syria Civilian Protection Act (2020) explicitly authorises US secondary sanctions on any person or entity that provides significant financial, material, or technological support to the Syrian government — including energy supply. This means a non-US company (like Dangote) supplying fuel to Assad-controlled Syria can be sanctioned by the US."
+      },
+      {
+        icon: "🏛️",
+        title: "Post-Assad Transition — New Reality Since Dec 2024",
+        body: "Assad fell in December 2024. Syria is now controlled by HTS (Hayat Tahrir al-Sham) and allied factions. HTS was itself designated a terrorist organisation by the US/EU. The US issued a 6-month General License in early 2025 for certain Syria transactions — but this is narrow and evolving."
+      },
+      {
+        icon: "💡",
+        title: "Humanitarian Window Opening",
+        body: "With Assad gone, US and EU Syria sanctions are being reviewed. Some are being eased for humanitarian and reconstruction purposes. Syria could become an open market in 2025–2026 if political process advances."
+      }
+    ],
+    dangoteAdvice: "Syria: watch closely. With Assad gone, the Caesar Act's rationale is eroding and sanctions are being reviewed. Do NOT engage currently without specific OFAC/EU authorisation. Position for early-mover advantage if General Licenses are expanded — Syria will need massive fuel imports for reconstruction."
+  },
+
+  BY: {
+    riskLevel: "HIGH",
+    headline: "Lukashenko Regime Sanctions — Belneftekhim Is on SDN List",
+    challenges: [
+      {
+        icon: "🏭",
+        title: "Belneftekhim (State Oil Company) Is Sanctioned",
+        body: "Belneftekhim, Belarus's state oil company, is on the US OFAC SDN list and EU sanctions list. It controls the Mozyr and Naftan refineries. Supplying Belneftekhim or its subsidiaries is a direct sanctions violation."
+      },
+      {
+        icon: "🔗",
+        title: "Belarus Relies Entirely on Russian Oil",
+        body: "Belarus imports virtually all its crude from Russia via Druzhba pipeline at politically subsidised rates. It re-exports refined products to Europe (until EU banned this). Dangote would need to displace Russian crude supply — unlikely while Russian oil flows at near-zero transport cost."
+      }
+    ],
+    dangoteAdvice: "Belarus: avoid state entities. If private Belarusian buyers approach Dangote, conduct comprehensive OFAC/EU screening. Practically, not a viable Dangote market given Russian oil dependency."
+  },
+
+  ML: {
+    riskLevel: "MEDIUM",
+    headline: "Wagner/Russian Presence Creates AML/Sanctions Risk for Fuel Supply Chains",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Wagner Group (Africa Corps) Active in Mali",
+        body: "Mali's military junta has contracted Russian Africa Corps (formerly Wagner) fighters. Wagner/Africa Corps is designated a terrorist organisation by the US and sanctioned by the EU. If fuel purchases fund or benefit Wagner operations, this creates OFAC secondary sanction risk."
+      },
+      {
+        icon: "🏦",
+        title: "ECOWAS Banking Sanctions (Partially Lifted)",
+        body: "ECOWAS imposed financial sanctions after the 2021 coup. Most were lifted in 2024 but CFA franc transfers still face scrutiny. Mali is also moving toward a new 'AES franc' currency with Burkina Faso and Niger — banking transition risk."
+      },
+      {
+        icon: "🚛",
+        title: "Landlocked — Routes via Côte d'Ivoire, Senegal, Guinea",
+        body: "Mali is landlocked. Fuel enters via Abidjan (Côte d'Ivoire) or Dakar (Senegal). Road banditry on N'Djamena–Bamako route is significant. Junta controls on cargo are increasing."
+      }
+    ],
+    dangoteAdvice: "Mali: verify all fuel buyers have no connection to Wagner/Africa Corps. Use Abidjan or Dakar as entry points via established Malian fuel importers. Require upfront payment through a non-Mali bank. Viable market with careful due diligence."
+  },
+
+  NE: {
+    riskLevel: "MEDIUM",
+    headline: "Post-Coup Junta — ECOWAS Sanctions Eased but Banking Routes Disrupted",
+    challenges: [
+      {
+        icon: "🏛️",
+        title: "CNSP Junta Replaced Democratic Government in 2023",
+        body: "Niger's military CNSP junta ousted President Bazoum in July 2023. ECOWAS imposed sweeping sanctions, including closing borders and banning financial transactions. Most ECOWAS sanctions were eased in 2024 after Niger, Mali, and Burkina Faso formed the Alliance of Sahel States (AES)."
+      },
+      {
+        icon: "🛢️",
+        title: "Chinese Oil Pipeline — Niger Has Crude Oil",
+        body: "Niger's Agadem oil field feeds a Chinese-built pipeline to Benin's coast (Sèmè port). Niger exports crude but still imports refined products. The junta has expelled French forces and French uranium contracts — creating a shift toward China and Russia."
+      },
+      {
+        icon: "🚛",
+        title: "Landlocked — Benin Route Disrupted",
+        body: "Niger is landlocked. The main route via Benin was disrupted during ECOWAS sanctions. Fuel routes via Nigeria (Kano) or Burkina Faso (Ouagadougou) remain active."
+      }
+    ],
+    dangoteAdvice: "Niger: viable Dangote market via Kano (Nigeria) land corridor. Verify payment route is not through a junta-controlled entity. The Nigeria-Niger border proximity makes Dangote a natural supplier — logistics are short."
+  },
+
+  BF: {
+    riskLevel: "MEDIUM",
+    headline: "Coup Government + Wagner Presence — AES Alliance Shifting Away from West",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Wagner/Africa Corps Active Since 2023",
+        body: "Burkina Faso's MPSR junta, led by Capt. Ibrahim Traoré, expelled French forces in 2023 and invited Russian Africa Corps. Same risk as Mali — Wagner-linked fuel purchases could trigger secondary OFAC scrutiny."
+      },
+      {
+        icon: "🚛",
+        title: "Jihadi Insurgency Blocking Fuel Routes",
+        body: "JNIM and ISGS Jihadist groups control significant road corridors in Burkina Faso, particularly north and east of Ouagadougou. Fuel convoys require armed escort. Some towns are under prolonged siege with no fuel access for months."
+      },
+      {
+        icon: "🏦",
+        title: "CFA Franc to AES Franc Transition Risk",
+        body: "Burkina Faso is planning to exit the CFA franc monetary zone (linked to the euro/France). A currency transition creates FX and payment settlement risk for contract denominated in USD or euros."
+      }
+    ],
+    dangoteAdvice: "Burkina Faso: viable but requires security assessment per shipment. Screen buyers for Wagner links. Use Abidjan (Côte d'Ivoire) as entry port. Inland road security is the primary operational risk."
+  },
+
+  GN: {
+    riskLevel: "MEDIUM",
+    headline: "Post-Coup Junta — ECOWAS Sanctions Applied, Commercial Banking Routes Impacted",
+    challenges: [
+      {
+        icon: "🏛️",
+        title: "CNRD Junta (2021) — Doumbouya Government",
+        body: "Guinea's CNRD military junta ousted President Alpha Condé in September 2021. ECOWAS imposed targeted sanctions. Unlike Mali/Niger, Guinea has not joined the AES and is in slower dialogue with ECOWAS. Conakry port functions normally."
+      },
+      {
+        icon: "⛏️",
+        title: "Mining-Dominated Economy",
+        body: "Guinea's economy is dominated by bauxite/aluminium mining. Fuel demand is heavily tied to mining operations — Dangote could target mining companies directly as anchor buyers."
+      }
+    ],
+    dangoteAdvice: "Guinea: viable Dangote market. Target mining companies (Rio Tinto, Winning Consortium) as anchor fuel buyers — they have USD liquidity. Screen government entities for ECOWAS/OFAC measures."
+  },
+
+  CD: {
+    riskLevel: "HIGH",
+    headline: "M23 Rebel Conflict, Mineral-Fuel Barter Economy, Extreme Infrastructure Deficit",
+    challenges: [
+      {
+        icon: "⚔️",
+        title: "M23 Rebellion Controls Eastern DRC",
+        body: "The M23 rebel group (backed by Rwanda) controls significant territory in eastern DRC including Goma (captured January 2025). Fuel entering eastern DRC risk being taxed, seized, or used by armed actors."
+      },
+      {
+        icon: "⛏️",
+        title: "Artisanal Mining Sector Uses Fuel-for-Minerals Barter",
+        body: "Much of DRC's fuel economy in mining zones operates on barter — fuel exchanged for coltan, gold, or other minerals. Formal USD payment is rare in remote areas."
+      },
+      {
+        icon: "🏗️",
+        title: "No Road Infrastructure — River Barge Is Primary Transport",
+        body: "DRC has virtually no paved roads outside major cities. The Congo River barge network is the main inland transport route. Fuel distribution inland from Matadi (Atlantic port) or Mombasa (via Uganda/Rwanda) takes weeks."
+      }
+    ],
+    dangoteAdvice: "DRC: target Kinshasa/Matadi (western DRC) only via Matadi port. Eastern DRC is operationally too dangerous and M23-controlled territory creates sanctions risk. Anchor buyers should be major mining companies with verified USD accounts outside DRC."
+  },
+
+  UA: {
+    riskLevel: "MEDIUM",
+    headline: "Active Warzone — War Risk Insurance and Port Security Required",
+    challenges: [
+      {
+        icon: "💣",
+        title: "Active Russian Missile/Drone Attacks on Energy Infrastructure",
+        body: "Russia has systematically targeted Ukraine's energy infrastructure since 2022 — power plants, substations, and fuel storage facilities. Ukrainian refineries and fuel depots have been destroyed. Ukraine now imports 100% of refined fuel."
+      },
+      {
+        icon: "⚓",
+        title: "Black Sea Ports Restricted — Danube and Rail Routes Active",
+        body: "Odessa and southern Ukrainian Black Sea ports operate under risk. Ukraine-Russia Black Sea grain/shipping deal has been suspended. Alternative routes: Danube ports (Izmail, Reni) via Romania, or overland from Poland/Romania."
+      },
+      {
+        icon: "💡",
+        title: "Massive Demand — Ukraine Needs Fuel for Military and Civilian Use",
+        body: "Ukraine's fuel demand is enormous: military operations, generator fuel (civilian power cuts), agricultural harvest. This is a real, large, and urgent market."
+      }
+    ],
+    dangoteAdvice: "Ukraine: legally fully open — no sanctions. Operationally: use Danube ports or Romanian Constanta (then overland). War risk insurance mandatory. Payment via Ukrainian government or vetted private importers (Naftogaz, OKKO). Strong market opportunity despite the risk."
+  },
+
+  PS: {
+    riskLevel: "HIGH",
+    headline: "Fuel Access Controlled by Israel — Not a Sanctions Issue for Dangote",
+    challenges: [
+      {
+        icon: "🚧",
+        title: "West Bank: COGAT Permits Required for All Fuel",
+        body: "Israel's COGAT (Coordination of Government Activities in the Territories) controls all fuel permits into the West Bank. Palestinian Authority fuel importers must obtain Israeli permits to import and distribute fuel. Dangote supplying the PA would need to go through Israeli permit-approved routes."
+      },
+      {
+        icon: "🔒",
+        title: "Gaza: Blockade Controls All Fuel Entry",
+        body: "Israel controls all entry points into Gaza. Since October 2023, fuel entry into Gaza has been severely restricted, triggering a humanitarian crisis. Fuel that enters Gaza goes through Israeli-controlled Kerem Shalom crossing only, after Israeli inspection. Dangote cannot directly supply Gaza without Israeli coordination."
+      },
+      {
+        icon: "💡",
+        title: "Palestinian Authority Has USD Payment Capacity",
+        body: "The PA maintains banking relationships with Jordanian banks and has USD clearing capacity. West Bank fuel imports are a viable commercial opportunity — the logistics challenge is Israeli permits, not payment."
+      }
+    ],
+    dangoteAdvice: "Palestinian Territories: West Bank (PA) is a viable Dangote market — deal via Jordanian distribution corridor (Jordan → Allenby Bridge → West Bank). No legal prohibition from Dangote's side. Gaza: effectively inaccessible for commercial supply currently; only UN/ICRC humanitarian channels."
+  },
+
+  PK: {
+    riskLevel: "LOW-MEDIUM",
+    headline: "FX Crisis + IMF Program — Payment Reliability Is the Key Question",
+    challenges: [
+      {
+        icon: "💸",
+        title: "Pakistan Rupee Crisis — State Bank Controls USD Outflows",
+        body: "Pakistan has faced recurring FX crises (2022–2024). The State Bank of Pakistan at times restricted USD outflows for fuel imports, causing fuel shortages despite being willing buyers. Pakistan's FX reserves dropped below $3 billion in 2023 (less than 3 weeks of import cover)."
+      },
+      {
+        icon: "🏦",
+        title: "IMF Program Constrains Subsidy Spending",
+        body: "Pakistan is under an IMF Extended Fund Facility. The IMF has required elimination of fuel subsidies — raising domestic fuel prices and reducing state-funded import capacity. PSO (Pakistan State Oil) is the main fuel importer and has had payment arrears to fuel suppliers."
+      },
+      {
+        icon: "💡",
+        title: "Improving: IMF Program Has Stabilised Reserves",
+        body: "By late 2024, Pakistan's FX reserves improved to $9–10 billion. The IMF program is largely on track. Payment risk has reduced from extreme to moderate."
+      }
+    ],
+    dangoteAdvice: "Pakistan: viable Dangote market — large, 220M+ population, high fuel demand. Require payment from PSO or private importers via confirmed L/C. Avoid open credit terms. State Bank approval for USD transfer may cause 30–60 day delays — price this into payment terms."
+  },
+
+  LK: {
+    riskLevel: "LOW-MEDIUM",
+    headline: "2022 Economic Collapse — Now Stabilising Under IMF Program",
+    challenges: [
+      {
+        icon: "💣",
+        title: "2022 Economic and Fuel Crisis",
+        body: "Sri Lanka's 2022 crisis saw foreign reserves drop near zero — the country literally could not pay for fuel imports. Ships sat in port unable to offload because Sri Lanka couldn't make payment. Queues of 10+ hours for fuel became normal. President Rajapaksa fled the country."
+      },
+      {
+        icon: "💡",
+        title: "IMF Recovery Underway — Reserves Rebuilding",
+        body: "Sri Lanka signed a $2.9B IMF program in 2023 and has been recovering. FX reserves have stabilised. The Ceylon Petroleum Corporation (CPC) is being reformed. By 2025, Sri Lanka has returned to more normal fuel import patterns."
+      }
+    ],
+    dangoteAdvice: "Sri Lanka: now viable — confirm CPC or private importer payment capacity via L/C. Monitor IMF program compliance. Good Dangote market given Indian Ocean geography — potential en-route supply point."
+  },
+
+  BD: {
+    riskLevel: "LOW-MEDIUM",
+    headline: "FX Pressure + Bangladesh Petroleum Corporation Reform",
+    challenges: [
+      {
+        icon: "💸",
+        title: "FX Reserves Under Pressure",
+        body: "Bangladesh's FX reserves declined from $45B in 2021 to $19B by 2024 due to post-COVID import surge and global energy price spike. Bangladesh Petroleum Corporation (BPC) accumulated payment arrears on fuel imports."
+      },
+      {
+        icon: "🏛️",
+        title: "Political Transition — Hasina Ousted August 2024",
+        body: "PM Sheikh Hasina was ousted in a student-led uprising in August 2024. Interim government under Muhammad Yunus is reforming the energy sector. Policy direction on fuel procurement is in flux."
+      }
+    ],
+    dangoteAdvice: "Bangladesh: strong underlying demand (170M+ population). Require L/C confirmed by a Bangladeshi bank with solid correspondent banking. Monitor BPC payment history before extending credit."
+  },
+
+  MN: {
+    riskLevel: "LOW",
+    headline: "Currently Buys 90% of Fuel From Russia — Dangote Would Need Price/Logistics Advantage",
+    challenges: [
+      {
+        icon: "🛢️",
+        title: "Russia Supplies ~90% of Mongolia's Fuel",
+        body: "Mongolia is landlocked and Russia is its neighbour. Russian fuel arrives by truck and rail at very low transport cost. Displacing Russia as a supplier would require Dangote fuel to arrive via China (longer rail route) at competitive price — very difficult."
+      }
+    ],
+    dangoteAdvice: "Mongolia: not a viable near-term Dangote market due to Russian fuel proximity. Monitor if Russia-Mongolia trade is disrupted by Western pressure on Mongolia to join sanctions."
+  },
+
+  GW: {
+    riskLevel: "MEDIUM",
+    headline: "Drug Trafficking Hub — AML Risk for Fuel Payment Flows",
+    challenges: [
+      {
+        icon: "🚨",
+        title: "Guinea-Bissau Is a Major Cocaine Transit Hub",
+        body: "Guinea-Bissau has been identified by the UN Office on Drugs and Crime as a major cocaine transit point between South America and Europe. The financial system is deeply penetrated by drug money. Fuel payment flows may commingle with narco-proceeds — creating AML risk for Dangote."
+      }
+    ],
+    dangoteAdvice: "Guinea-Bissau: conduct enhanced AML/KYC on all buyers. Fuel payment must come from a verifiable legitimate source. Use a European bank as intermediary. Small market but real — proceed with extreme care."
+  },
+
+  CF: {
+    riskLevel: "HIGH",
+    headline: "Wagner-Controlled State — Fuel Revenues Benefit Sanctioned Russian Entities",
+    challenges: [
+      {
+        icon: "🔫",
+        title: "Russian Africa Corps (Wagner) Controls Security and Mines",
+        body: "Wagner/Africa Corps effectively co-governs the CAR alongside President Touadéra. They control gold and diamond mining revenues. A fuel contract with CAR government entities may generate revenue that funds Wagner operations — triggering OFAC secondary sanction risk."
+      },
+      {
+        icon: "🚛",
+        title: "Virtually No Road Infrastructure",
+        body: "CAR has almost no paved roads. Fuel distribution from Bangui (the capital, on Congo River) is extremely difficult. Much of the country is accessible only by river barge or light aircraft."
+      }
+    ],
+    dangoteAdvice: "CAR: only supply through vetted UN humanitarian channels or NGOs (WFP, ICRC). No commercial deal with CAR government until Wagner influence is confirmed eliminated. Payment and security risks are both extreme."
+  },
+
+  ER: {
+    riskLevel: "HIGH",
+    headline: "One of the World's Most Isolated States — Near-Zero Commercial Banking",
+    challenges: [
+      {
+        icon: "🏛️",
+        title: "Isaias Afwerki Regime — Closed Economy",
+        body: "Eritrea under President Isaias Afwerki is one of the world's most closed economies. Private business is severely restricted. The government controls all imports. There is no meaningful private sector fuel importer."
+      },
+      {
+        icon: "🏦",
+        title: "No Functioning Correspondent Banking",
+        body: "Eritrea's banking system is not integrated into the global financial system. USD transfers in or out of Eritrea are extremely difficult. Fuel payment would need to be structured through a third-country arrangement."
+      }
+    ],
+    dangoteAdvice: "Eritrea: not a viable commercial Dangote market. Any engagement would require government-to-government arrangement between Nigeria and Eritrea. Monitor for political opening."
+  },
+};
