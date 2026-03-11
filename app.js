@@ -21,7 +21,6 @@ function renderAll() {
   renderAlertBanner();
   renderKPIs();
   renderBarChart();
-  renderPieChart();
   renderCountryCards();
   renderOpportunities();
   renderStations();
@@ -126,10 +125,14 @@ function renderBarChart() {
     c.status === "WATCH"    ? "#f39c12" : "#27ae60"
   );
 
-  // Set canvas height dynamically: 24px per country row
-  const rowHeight = 24;
-  const canvas = document.getElementById("barChart");
-  canvas.height = sorted.length * rowHeight + 20;
+  // Set canvas size dynamically: fill container width, 22px per country row
+  const rowHeight = 22;
+  const canvas    = document.getElementById("barChart");
+  const scroll    = document.getElementById("barChartScroll");
+  const w         = scroll.clientWidth || 600;
+  canvas.width        = w;
+  canvas.style.width  = w + "px";
+  canvas.height       = sorted.length * rowHeight + 30;
   canvas.style.height = canvas.height + "px";
 
   const ctx = canvas.getContext("2d");
@@ -143,12 +146,12 @@ function renderBarChart() {
         data,
         backgroundColor: colors,
         borderRadius: 3,
-        barThickness: 16,
+        barThickness: 14,
       }]
     },
     options: {
-      indexAxis: "y",          // Horizontal bars — names on the left
-      responsive: false,        // We control size manually
+      indexAxis: "y",           // Horizontal bars — names on the left
+      responsive: false,         // We control size manually
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },

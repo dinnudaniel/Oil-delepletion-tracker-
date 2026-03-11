@@ -182,7 +182,7 @@ body {
 /* ===== CHARTS ROW ===== */
 .charts-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;   /* bar chart takes full width */
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
