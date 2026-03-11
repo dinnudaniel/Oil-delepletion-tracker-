@@ -559,6 +559,9 @@ body {
   color: #ffc0c0;
   margin-bottom: 1rem;
 }
+.sanctions-section { margin-bottom: 1rem; }
+.sanctions-section h4 { font-size: 0.95rem; }
+.sanctions-section ul li { margin-bottom: 2px; }
 .modal-notes-box {
   background: rgba(246,166,35,0.08);
   border: 1px solid rgba(246,166,35,0.2);

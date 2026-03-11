@@ -745,6 +745,26 @@ function openModal(countryId) {
       <div class="modal-notes-box">${c.notes}</div>
     </div>` : "";
 
+  // Sanctions / Embargo section
+  const si = SANCTIONS_INFO[countryId] || null;
+  const sanctionsBgMap = { "🔴": "#2d0a0a", "🟠": "#2d1a00", "🟡": "#1e1e00", "🟢": "#0a1a0a" };
+  const sanctionsBorderMap = { "🔴": "#c0392b", "🟠": "#e67e22", "🟡": "#d4ac0d", "🟢": "#27ae60" };
+  const sanctionsHTML = si ? `
+    <div class="modal-section sanctions-section" style="border:2px solid ${sanctionsBorderMap[si.level]||'#555'};background:${sanctionsBgMap[si.level]||'#111'};border-radius:10px;padding:14px;">
+      <h4 style="margin:0 0 8px;color:${sanctionsBorderMap[si.level]||'#ccc'};">${si.level} Trade & Sanctions Status</h4>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <span style="font-size:0.85rem;font-weight:700;background:${sanctionsBorderMap[si.level]}22;border:1px solid ${sanctionsBorderMap[si.level]};color:${sanctionsBorderMap[si.level]};padding:3px 10px;border-radius:20px;">${si.status}</span>
+        <span style="font-size:0.85rem;font-weight:700;">Dangote Eligible: ${si.dangoteEligible}</span>
+      </div>
+      <div style="font-size:0.88rem;color:#ddd;margin-bottom:10px;line-height:1.5;">${si.summary}</div>
+      <ul style="margin:0;padding:0 0 0 18px;font-size:0.82rem;color:#bbb;line-height:1.7;">
+        ${si.details.map(d=>`<li>${d}</li>`).join("")}
+      </ul>
+    </div>` : `
+    <div class="modal-section" style="border:1px solid #333;border-radius:8px;padding:10px;font-size:0.82rem;color:#888;">
+      🟢 No specific sanctions data found for this territory. Assume open trade unless verified otherwise.
+    </div>`;
+
   document.getElementById("modalContent").innerHTML = `
     <div class="modal-country-header">
       <div class="modal-flag">${c.flag}</div>
@@ -759,6 +779,8 @@ function openModal(countryId) {
 
     ${nonOfficialBadge}
     <div class="modal-alert-box">⚠️ ${c.alert}</div>
+
+    ${sanctionsHTML}
 
     <div class="modal-section">
       <h4>🛢️ Oil Production Status</h4>

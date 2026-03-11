@@ -4218,3 +4218,860 @@ OIL_DATA.nonOfficialTerritories = [
     stations: [],
   },
 ];
+
+// ─── SANCTIONS & EMBARGO DATA ─────────────────────────────────────────────────
+// Sources: OFAC, UN Security Council, EU Council, UK OFSI — as of March 2026
+// Legend: 🔴 Heavy sanctions  🟠 Partial/targeted  🟡 Watch/complexity  🟢 Open trade
+const SANCTIONS_INFO = {
+
+  // ── AFRICA ──────────────────────────────────────────────────────────────────
+  DZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No trade sanctions. Algeria is itself a major oil exporter (Sonatrach). Dangote can supply refined products.",
+    details:["No UN, US, or EU oil embargo.", "Algeria is OPEC member — produces own crude but imports refined products.", "Normal commercial terms apply."] },
+
+  AO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Angola is a major African oil producer and OPEC member.",
+    details:["Free to trade with Nigeria.", "Strong existing oil-to-oil bilateral relationship.", "Normal commercial terms apply."] },
+
+  BJ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Benin is a stable ECOWAS member with open trade.",
+    details:["No embargo restrictions.", "Imports most fuel via Lagos corridor — Dangote is a natural supplier.", "Normal commercial terms apply."] },
+
+  BW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Botswana has stable governance and open fuel trade.",
+    details:["No US, EU, or UN restrictions.", "Land-locked — imports via South Africa and Mozambique ports.", "Normal commercial terms apply."] },
+
+  BF: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"No oil embargo, but US/EU/UN targeted sanctions on specific junta-linked individuals following 2022 coup.",
+    details:["No blanket oil trade ban.", "US Executive Order sanctions on coup leaders (not the state).", "Dangote can supply — must verify end-buyer is not a sanctioned entity.", "ECOWAS suspended Burkina Faso; some banking complications."] },
+
+  BI: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US and EU targeted sanctions since 2015 political crisis. No full oil embargo.",
+    details:["OFAC targeted sanctions on specific government officials.", "EU also imposed targeted measures.", "Oil trade itself is not banned — but payment clearing may face delays.", "Conduct enhanced due diligence on counterparty."] },
+
+  CV: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Cape Verde is a stable island nation with open trade.",
+    details:["No restrictions of any kind.", "Imports 100% of fuel — Dangote is a viable Atlantic supplier.", "Normal commercial terms apply."] },
+
+  CM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Cameroon has open oil trade.",
+    details:["No US, EU, or UN restrictions.", "Minor domestic oil producer — also imports refined products.", "Normal commercial terms apply."] },
+
+  CF: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"UN arms embargo in place. No oil trade embargo, but severe instability and Russian Wagner Group presence triggers US/EU secondary-sanction caution.",
+    details:["UN Security Council arms embargo (not oil).", "US/EU targeted sanctions on armed group leaders.", "Dangote can sell fuel — but must screen buyers against UN/OFAC consolidated lists.", "Payment risk HIGH due to banking fragility."] },
+
+  TD: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"No full oil embargo. US and EU targeted sanctions on specific individuals. Oil transit country for landlocked neighbors.",
+    details:["No blanket trade restrictions.", "Some OFAC-listed individuals in government/military.", "Conduct KYC/AML screening on buyers.", "Payment capacity is limited — prefer L/C or prepayment."] },
+
+  KM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Comoros is a small island nation with open trade.",
+    details:["No restrictions of any kind.", "Imports 100% of refined fuel.", "Normal commercial terms apply."] },
+
+  CG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Republic of Congo is an oil producer with open trade.",
+    details:["No US, EU, or UN restrictions.", "OPEC observer. Imports refined products.", "Normal commercial terms apply."] },
+
+  CD: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"UN arms embargo active. US and EU targeted sanctions on armed group leaders and some officials. No oil trade ban.",
+    details:["UN Security Council arms embargo (Resolution 1533) — NOT an oil embargo.", "OFAC designated individuals in DRC — screen all counterparties.", "Dangote can supply — enhanced due diligence required.", "Severe banking infrastructure gaps — prefer pre-payment."] },
+
+  DJ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Djibouti is a strategic port with open trade.",
+    details:["No US, EU, or UN restrictions.", "Critical fuel transit hub for Horn of Africa.", "Normal commercial terms apply."] },
+
+  EG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Egypt is a major regional economy with open oil trade.",
+    details:["No restrictions of any kind.", "Egypt operates Suez Canal — key transit for oil flows.", "Active importer of refined products.", "Normal commercial terms apply."] },
+
+  GQ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No oil trade sanctions. Equatorial Guinea is an oil producer.",
+    details:["No US, EU, or UN oil embargo.", "OPEC member. Imports refined products.", "Normal commercial terms apply."] },
+
+  ER: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"UN arms embargo (2009). US and EU targeted sanctions on officials. No full oil embargo.",
+    details:["UN Security Council Resolution 1907 — arms embargo only.", "OFAC targeted sanctions on Eritrean officials.", "Oil trade not explicitly banned — screen counterparties.", "Severely limited banking access; payment risk HIGH."] },
+
+  SZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Eswatini (Swaziland) has open trade.",
+    details:["No restrictions of any kind.", "Land-locked — imports via South Africa.", "Normal commercial terms apply."] },
+
+  ET: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No oil sanctions. Some US/EU targeted measures on Tigray conflict actors — not on oil trade.",
+    details:["No blanket oil embargo.", "US E.O. 14046 targeted measures — screen military/government entities.", "Dangote can supply — large import market.", "Normal commercial terms for civilian fuel buyers."] },
+
+  GA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No oil sanctions. Gabon is an OPEC member.",
+    details:["No US, EU, or UN oil restrictions.", "Imports refined products despite crude production.", "Normal commercial terms apply."] },
+
+  GM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Gambia is a stable ECOWAS member.",
+    details:["No restrictions of any kind.", "Imports 100% of fuel — Dangote is a natural ECOWAS supplier.", "Normal commercial terms apply."] },
+
+  GH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Ghana is a stable democracy with open oil trade.",
+    details:["No restrictions of any kind.", "Own oil producer (Jubilee Field) but also imports refined products.", "Strong candidate for Dangote supply deals.", "Normal commercial terms apply."] },
+
+  GN: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US and EU targeted sanctions following 2021 coup. ECOWAS sanctions also applied. No oil embargo.",
+    details:["No blanket oil trade ban.", "US Executive Order targeted sanctions on coup leaders.", "ECOWAS economic sanctions — verify banking channels.", "Dangote can supply — screen buyers, use secure payment method."] },
+
+  GW: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"UN targeted sanctions (drug trafficking-linked officials). Political instability. No oil embargo.",
+    details:["UN Security Council measures on specific individuals.", "OFAC watch-list presence — conduct thorough KYC.", "No blanket oil trade restriction.", "Payment risk HIGH — fragile banking system."] },
+
+  CI: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Côte d'Ivoire is the West Africa economic hub.",
+    details:["No restrictions of any kind.", "Post-2011 sanctions fully lifted.", "Major import market — operates Abidjan refinery (SIR).", "Strong Dangote opportunity."] },
+
+  KE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Kenya is East Africa's largest fuel importer.",
+    details:["No restrictions of any kind.", "100% import dependent on refined products.", "Active spot market — strong Dangote target.", "Normal commercial terms apply."] },
+
+  LS: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Lesotho has open trade via South Africa.",
+    details:["No restrictions of any kind.", "Landlocked, fully dependent on South Africa supply chain.", "Normal commercial terms apply."] },
+
+  LR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Liberia has open trade (post-conflict sanctions fully lifted).",
+    details:["All UN/US/EU Liberia sanctions fully lifted (lifted 2016).", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  LY: { level:"🟠", status:"Complex", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"Libya is split between two rival governments. UN arms embargo active. Oil sector is legally complex but not under oil trade ban for buyers.",
+    details:["UN Security Council arms embargo (Res. 1970/2011) — NOT an oil embargo.", "Libya is a major oil exporter, NOT a buyer of crude.", "Imports refined products — Dangote can sell to Libya.", "Must verify: deal with NOC (National Oil Corporation) recognised by UN, not rival factions.", "US/EU asset freezes on Gaddafi family entities only."] },
+
+  MG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Madagascar has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  MW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Malawi has open trade.",
+    details:["No restrictions of any kind.", "Landlocked — severe fuel access issues due to logistics, NOT sanctions.", "Normal commercial terms apply."] },
+
+  ML: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US and EU targeted sanctions following 2021 coup. ECOWAS embargo (now partially lifted). No full oil ban.",
+    details:["No blanket oil trade restriction.", "OFAC/EU targeted sanctions on coup-linked officials.", "ECOWAS lifted most sanctions in 2024.", "Dangote can supply — verify buyer entities, use secure payment terms."] },
+
+  MR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Mauritania has open trade and newly discovered offshore oil.",
+    details:["No restrictions of any kind.", "Imports refined products.", "Normal commercial terms apply."] },
+
+  MU: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Mauritius is a stable island economy.",
+    details:["No restrictions of any kind.", "Major regional services hub — imports 100% of fuel.", "Normal commercial terms apply."] },
+
+  MA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Morocco is a stable North African economy.",
+    details:["No restrictions of any kind.", "Large importer of refined products.", "Normal commercial terms apply."] },
+
+  MZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Mozambique has open trade (LNG producer).",
+    details:["No restrictions of any kind.", "Emerging LNG exporter, still imports refined products.", "Normal commercial terms apply."] },
+
+  NA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Namibia has open trade.",
+    details:["No restrictions of any kind.", "Imports most fuel via South Africa.", "Normal commercial terms apply."] },
+
+  NE: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US, EU and ECOWAS sanctions following 2023 coup. No full oil embargo, but financial restrictions.",
+    details:["ECOWAS economic sanctions — some eased in 2024.", "US/EU targeted sanctions on coup leaders.", "Oil trade not explicitly banned — payment routing is the challenge.", "Dangote can supply — use letter of credit through non-sanctioned bank."] },
+
+  NG: { level:"🟢", status:"Origin",  dangoteEligible:"🏭 SOURCE (Dangote HQ)",
+    summary:"Nigeria is the home of Dangote Refinery. No sanctions.",
+    details:["Dangote Petroleum Refinery is based in Lagos, Nigeria.", "OPEC member. Major oil producer.", "No US, EU, or UN sanctions on Nigerian oil trade."] },
+
+  RW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Rwanda has open trade.",
+    details:["No restrictions of any kind.", "Landlocked — all fuel imported.", "Normal commercial terms apply."] },
+
+  ST: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. São Tomé and Príncipe has open trade.",
+    details:["No restrictions of any kind.", "Tiny island nation — imports 100% of fuel.", "Normal commercial terms apply."] },
+
+  SN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Senegal has open trade and is a new oil/gas producer.",
+    details:["No restrictions of any kind.", "New offshore oil production started 2024 — still imports refined products.", "Strong Dangote target market.", "Normal commercial terms apply."] },
+
+  SC: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Seychelles has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  SL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Sierra Leone has open trade (post-conflict sanctions fully lifted).",
+    details:["All UN/US Sierra Leone sanctions fully lifted.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  SO: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"UN arms embargo active. Al-Shabaab terrorist designation. No oil trade embargo, but high AML risk.",
+    details:["UN arms embargo (Res. 733) — NOT an oil embargo.", "Al-Shabaab (al-Qaeda affiliate) designated terrorist — OFAC/UN list.", "Dangote can sell fuel to legitimate Somali government entities.", "SCREEN ALL BUYERS against UN/OFAC consolidated lists.", "Payment risk VERY HIGH — use only secure pre-payment."] },
+
+  SS: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US and EU targeted sanctions on specific individuals. UN arms embargo. No blanket oil embargo on trade with South Sudan.",
+    details:["UN arms embargo (Res. 2428) — NOT an oil embargo.", "OFAC targeted sanctions on senior officials.", "South Sudan is an oil producer (crude) but imports refined products.", "Dangote can supply — buyer due diligence required.", "Payment risk HIGH — political instability, limited FX reserves."] },
+
+  SD: { level:"🔴", status:"Restricted", dangoteEligible:"⚠️ HIGH CAUTION",
+    summary:"Sudan under US OFAC sanctions. Conflict with RSF ongoing. Previously comprehensive US embargo (partially eased). Trade requires careful legal review.",
+    details:["US OFAC: General License partially eased restrictions post-2017, but targeted measures remain.", "EU targeted sanctions re-imposed 2024 due to RSF conflict.", "No UN oil embargo — but US secondary sanction risk for USD-denominated transactions.", "Dangote CAN trade in principle — must use non-USD settlement and verify buyers.", "Legal counsel strongly recommended before any deal."] },
+
+  TZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Tanzania has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Gateway for landlocked East/Central Africa — strong Dangote opportunity."] },
+
+  TG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Togo has open trade.",
+    details:["No restrictions of any kind.", "Imports 100% of fuel.", "Normal commercial terms apply."] },
+
+  TN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Tunisia has open trade.",
+    details:["No restrictions of any kind.", "Imports refined products.", "Normal commercial terms apply."] },
+
+  UG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Uganda has open trade.",
+    details:["No restrictions of any kind.", "Landlocked — all fuel imported.", "Normal commercial terms apply."] },
+
+  ZM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Zambia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  ZW: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US OFAC (ZDERA) and EU targeted sanctions on Zimbabwe government officials and entities.",
+    details:["OFAC sanctions on ZANU-PF officials and connected entities — NOT a blanket oil embargo.", "EU targeted asset freezes.", "Oil trade with private sector is possible.", "Dangote can supply — screen all buyers against OFAC/EU lists.", "Payment risk HIGH — limited FX; prefer USD pre-payment or L/C via a non-sanctioned bank."] },
+
+  // ── AMERICAS ────────────────────────────────────────────────────────────────
+  AG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Antigua and Barbuda has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  AR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Argentina has open trade.",
+    details:["No restrictions of any kind.", "Oil producer and refiner, also imports some products.", "Normal commercial terms apply."] },
+
+  BS: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. The Bahamas has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  BB: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Barbados has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  BZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Belize has open trade.",
+    details:["No restrictions of any kind.", "Imports most fuel.", "Normal commercial terms apply."] },
+
+  BO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Bolivia has open trade.",
+    details:["No restrictions of any kind.", "Gas producer; imports some refined products.", "Normal commercial terms apply."] },
+
+  CA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Nigeria-Canada trade. Canada is itself a top-5 oil producer.",
+    details:["No restrictions of any kind on Nigerian oil.", "Canada largely self-sufficient in crude — imports specialty refined products.", "Normal commercial terms apply."] },
+
+  CL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Chile has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  CO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Colombia has open trade.",
+    details:["No restrictions of any kind.", "Oil producer but imports refined products.", "Normal commercial terms apply."] },
+
+  CR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Costa Rica has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  CU: { level:"🔴", status:"EMBARGO", dangoteEligible:"🚫 HIGH RISK",
+    summary:"🚫 US COMPREHENSIVE EMBARGO since 1962. Nigeria/Dangote can technically trade, but US dollar clearing is blocked and secondary sanction risk is high.",
+    details:["US Helms-Burton Act / Cuban Assets Control Regulations (CACR) — comprehensive US embargo.", "Cuba CANNOT use US dollars or any USD-clearing bank.", "NO direct embargo between Nigeria and Cuba — trade is legally possible in non-USD currency.", "BUT: Any bank that processes USD for Cuba faces US secondary sanctions.", "Dangote would need to settle in euros, yuan, or barter — complex and high-risk.", "EU, Canada, and most non-US countries DO trade with Cuba.", "Conclusion: Trade possible but requires specialist legal structure. Risk rating: HIGH."] },
+
+  DM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Dominica has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  DO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Dominican Republic has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  EC: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Ecuador has open trade.",
+    details:["No restrictions of any kind.", "Oil producer and importer of refined products.", "Normal commercial terms apply."] },
+
+  SV: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. El Salvador has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  GD: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Grenada has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  GT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Guatemala has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  GY: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Guyana is a new major oil producer — open trade.",
+    details:["No restrictions of any kind.", "Rapid oil production growth (ExxonMobil Stabroek block).", "Normal commercial terms apply."] },
+
+  HT: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"NO direct oil embargo between Haiti and Nigeria. Haiti CAN buy from Dangote. However, US/UN targeted sanctions on Haiti gang leaders and specific entities complicate financial transactions.",
+    details:["There is NO blanket oil embargo on Haiti.", "Nigeria-Haiti oil trade is NOT banned under international law.", "UN Security Council: targeted sanctions (travel bans/asset freezes) on specific gang leaders (Jimmy Chérizier 'Barbecue', etc.) — NOT the Haitian state.", "US OFAC: Haiti-related sanctions on specific individuals/entities — screen all buyers.", "PetroCaribe (Venezuela supply program) collapsed — Haiti now buys on open market.", "Main challenge is NOT sanctions — it is gang control of fuel terminals (Varreux terminal) and payment capacity.", "Dangote can legally sell to Haiti via legitimate importers.", "Recommendation: Partner with vetted Haitian importers; insist on pre-payment or confirmed L/C."] },
+
+  HN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Honduras has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  JM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Jamaica has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  MX: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Mexico is a major oil producer with open trade.",
+    details:["No restrictions of any kind.", "PEMEX operates — also imports refined products.", "Normal commercial terms apply."] },
+
+  NI: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US and EU targeted sanctions on Ortega government officials. No blanket oil embargo.",
+    details:["RENACER Act (US) — targeted sanctions on Nicaraguan officials.", "EU targeted measures.", "No oil trade ban — private sector trade is possible.", "Dangote can supply — conduct thorough buyer due diligence.", "Payment risk MEDIUM."] },
+
+  PA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Panama is a major trade and logistics hub.",
+    details:["No restrictions of any kind.", "Panama Canal — major oil transit route.", "Normal commercial terms apply."] },
+
+  PY: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Paraguay has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  PE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Peru has open trade.",
+    details:["No restrictions of any kind.", "Small domestic oil production — also imports.", "Normal commercial terms apply."] },
+
+  KN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. St. Kitts and Nevis has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  LC: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. St. Lucia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  VC: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. St. Vincent and the Grenadines has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  SR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Suriname has open trade.",
+    details:["No restrictions of any kind.", "Small oil producer — also imports refined products.", "Normal commercial terms apply."] },
+
+  TT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Trinidad and Tobago is an oil and gas producer.",
+    details:["No restrictions of any kind.", "Oil/LNG exporter — but may import some refined products.", "Normal commercial terms apply."] },
+
+  UY: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Uruguay has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  VE: { level:"🔴", status:"Sanctioned", dangoteEligible:"🚫 HIGH RISK",
+    summary:"🚫 US OFAC comprehensive sanctions on Venezuela's oil sector (PDVSA). Secondary sanction risk for any entity trading with Venezuela.",
+    details:["US Executive Order 13850 — sanctions on Venezuela's oil sector.", "PDVSA is an OFAC Specially Designated National (SDN).", "EU and Canada also have targeted sanctions.", "Nigeria/Dangote trading with Venezuela creates secondary sanction risk — US could sanction Dangote if it trades with PDVSA.", "Limited General Licenses (e.g., Chevron waiver) exist for some buyers but NOT Dangote.", "Venezuela trades oil with China, Russia, Cuba — all accepting secondary sanction risk.", "Recommendation: AVOID until OFAC licenses are in place. Legal review mandatory."] },
+
+  // ── ASIA ────────────────────────────────────────────────────────────────────
+  AF: { level:"🔴", status:"Restricted", dangoteEligible:"⚠️ HIGH CAUTION",
+    summary:"Taliban (Islamic Emirate of Afghanistan) designated terrorist entity. Sweeping OFAC/UN targeted sanctions. Humanitarian exemptions exist.",
+    details:["Taliban designated by US, EU, UN — but sanctions have humanitarian carve-outs.", "OFAC General License permits sale of food, medicine, fuel for civilian use.", "UN Security Council Resolution 2615 — humanitarian exemption covers fuel.", "Dangote can supply fuel for civilian/humanitarian purposes under exemption.", "CANNOT pay Taliban officials or entities directly.", "Must route through vetted Afghan commercial importers or UN-approved channels.", "Payment risk VERY HIGH — limited banking access."] },
+
+  AM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Armenia. Open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  AZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Azerbaijan is a major Caspian oil producer.",
+    details:["No restrictions of any kind.", "Oil exporter (SOCAR) — may import refined products.", "Normal commercial terms apply."] },
+
+  BH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Bahrain has open trade.",
+    details:["No restrictions of any kind.", "Small oil producer — imports refined products.", "Normal commercial terms apply."] },
+
+  BD: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Bangladesh has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  BT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Bhutan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  BN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Brunei is an oil producer with open trade.",
+    details:["No restrictions of any kind.", "Oil and LNG exporter.", "Normal commercial terms apply."] },
+
+  KH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Cambodia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  CN: { level:"🟡", status:"Watch",   dangoteEligible:"✅ YES (with awareness)",
+    summary:"No sanctions between Nigeria and China. China actively buys sanctioned oil from Russia, Iran, Venezuela — creating complex global supply dynamics.",
+    details:["No US, EU, or UN sanctions on China-Nigeria trade.", "China is the world's largest oil importer.", "China buys Russian, Iranian, and Venezuelan sanctioned oil — this is China's sovereign choice.", "Dangote selling to Chinese buyers is fully legal and unrestricted.", "Note: Chinese-owned tankers may carry mixed cargo — Dangote should ensure clean title.", "Normal commercial terms apply for direct China-Dangote trade."] },
+
+  CY: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Cyprus is an EU member with open trade.",
+    details:["No restrictions of any kind.", "Applies EU Russia oil ban (since Dec 2022).", "Imports refined products from non-Russian sources.", "Normal commercial terms apply for Dangote supply."] },
+
+  GE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Georgia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  ID: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Indonesia is a major emerging market with open trade.",
+    details:["No restrictions of any kind.", "Former OPEC member — now a net oil importer.", "Pertamina is main buyer — strong Dangote opportunity.", "Normal commercial terms apply."] },
+
+  IR: { level:"🔴", status:"SANCTIONED", dangoteEligible:"🚫 AVOID",
+    summary:"🚫 COMPREHENSIVE US, EU, and UN SANCTIONS. Iran's oil sector is fully sanctioned. Trading with Iran's oil sector exposes Dangote to US secondary sanctions.",
+    details:["US: IFCA (Iran Freedom and Counter-Proliferation Act) — comprehensive oil sanctions.", "EU: Council Regulation 267/2012 — oil import ban.", "UN Security Council: multiple resolutions on Iran (nuclear program).", "NIOC (National Iranian Oil Co.) is on OFAC SDN list.", "Countries that buy Iranian oil: China, India (limited), Turkey (limited) — all accept secondary sanction risk.", "If Dangote sells TO Iran or buys FROM Iran, US can sanction Dangote's international banking access.", "India CAN buy Iranian oil — but under waivers and at enormous legal/banking risk. India does so at sovereign level.", "Europe CANNOT buy Iranian oil under EU law.", "Recommendation: DO NOT TRADE with Iran. Risk is existential to Dangote's international banking relationships."] },
+
+  IQ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No current sanctions on Iraq's oil trade. Iraq is OPEC's 2nd largest producer.",
+    details:["Old UN oil-for-food program (ended 2003) — fully lifted.", "No current oil trade sanctions.", "Iraq is a major crude exporter — imports refined products.", "Normal commercial terms apply."] },
+
+  IL: { level:"🟡", status:"Watch",   dangoteEligible:"✅ YES",
+    summary:"No sanctions on Israel-Nigeria trade. Regional geopolitical complexity noted.",
+    details:["No US, EU, or UN oil trade sanctions on Israel.", "Some Arab League member states have historical trade restrictions on Israel — Nigeria is NOT bound by these.", "Gaza conflict (2023–present) has not resulted in international oil sanctions on Israel.", "Dangote can trade with Israeli buyers.", "Normal commercial terms apply."] },
+
+  JO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Jordan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  KZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Kazakhstan is a major oil producer with open trade.",
+    details:["No restrictions of any kind.", "Major Caspian oil producer (KazMunayGas).", "Normal commercial terms apply."] },
+
+  KW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Kuwait is an OPEC member with open trade.",
+    details:["No restrictions of any kind.", "OPEC member and major oil producer/exporter.", "Normal commercial terms apply."] },
+
+  KG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Kyrgyzstan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  LA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Laos has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  LB: { level:"🟠", status:"Caution", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"US and EU targeted sanctions (Hezbollah, some political figures). Lebanon's banking system has collapsed. No oil embargo.",
+    details:["Hezbollah designated terrorist by US/EU — do not deal with Hezbollah-linked entities.", "OFAC targeted sanctions on specific Lebanese politicians.", "Lebanon's banking system effectively collapsed (2019) — payment risk VERY HIGH.", "No blanket oil trade embargo.", "Dangote can sell to Lebanon — must use foreign bank intermediary and pre-payment.", "Serious KYC required on any buyer."] },
+
+  MY: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Malaysia has open trade.",
+    details:["No restrictions of any kind.", "Oil producer (Petronas) — also imports refined products.", "Normal commercial terms apply."] },
+
+  MV: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Maldives has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  MN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Mongolia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent — largely from Russia currently.", "Normal commercial terms apply."] },
+
+  MM: { level:"🔴", status:"Restricted", dangoteEligible:"⚠️ HIGH CAUTION",
+    summary:"US, EU, and UK comprehensive sanctions on Myanmar military (Tatmadaw) following 2021 coup. No blanket oil embargo but energy sector is targeted.",
+    details:["US Executive Order 14014 — targeted sanctions including Myanmar Oil and Gas Enterprise (MOGE).", "MOGE is on OFAC SDN list — do NOT deal with MOGE.", "EU: Council Decision 2021/711 — targeted sanctions.", "UK: Myanmar sanctions regime.", "Myanmar imports refined products — civilian sector buyers may be accessible.", "Dangote must avoid MOGE and military-linked entities.", "Partner with private civilian importers only.", "Payment risk HIGH."] },
+
+  NP: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Nepal has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent — mainly via India.", "Normal commercial terms apply."] },
+
+  KP: { level:"🔴", status:"PROHIBITED", dangoteEligible:"🚫 PROHIBITED",
+    summary:"🚫 UN SECURITY COUNCIL TOTAL OIL EMBARGO. North Korea is completely prohibited from importing petroleum products beyond minimal UN-approved humanitarian limits.",
+    details:["UN Security Council Resolution 2397 (2017) — annual petroleum product import cap of 500,000 barrels.", "UN Resolution 2375 — crude oil supply capped at 4 million barrels/year.", "US: North Korea Sanctions Regulations (31 CFR Part 510) — comprehensive.", "EU, UK, Australia, Japan, Canada: parallel comprehensive sanctions.", "ANY entity supplying oil to North Korea beyond UN caps violates UN Security Council law.", "North Korea is the most severely sanctioned country in the world.", "Conclusion: DANGOTE CANNOT SELL TO NORTH KOREA. This is a UN-mandatory prohibition."] },
+
+  OM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Oman is a Gulf oil producer with open trade.",
+    details:["No restrictions of any kind.", "OPEC+ member and oil exporter.", "Normal commercial terms apply."] },
+
+  PK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Pakistan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  PS: { level:"🟡", status:"Complex", dangoteEligible:"⚠️ CONDITIONAL",
+    summary:"Palestinian Territories (West Bank/Gaza). No international oil embargo on Palestine. Fuel access controlled by Israeli authorities.",
+    details:["No UN, US, or EU oil sanctions on Palestinian buyers.", "West Bank: fuel imports require Israeli COGAT permits — not a Dangote-imposed restriction.", "Gaza: Israeli blockade severely restricts fuel imports — humanitarian exemptions apply.", "Dangote can supply to Palestinian Authority (West Bank) through normal channels.", "Gaza supply requires coordination with Israeli authorities and UN.", "No legal prohibition from Dangote's side — logistics and politics are the challenge."] },
+
+  PH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Philippines has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  QA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Qatar is a major LNG exporter with open trade.",
+    details:["No restrictions of any kind.", "Major LNG/oil exporter — also imports some refined products.", "Normal commercial terms apply."] },
+
+  SA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Saudi Arabia is the world's largest oil exporter.",
+    details:["No restrictions of any kind.", "OPEC leader — Aramco exports crude, also imports refined products.", "Normal commercial terms apply."] },
+
+  LK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Sri Lanka has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent — severe 2022 crisis.", "Strong Dangote market opportunity.", "Normal commercial terms apply."] },
+
+  SY: { level:"🔴", status:"SANCTIONED", dangoteEligible:"🚫 AVOID",
+    summary:"🚫 US, EU, and Arab League comprehensive sanctions on Syria. Oil sector fully sanctioned.",
+    details:["US: Caesar Syria Civilian Protection Act (2020) — comprehensive oil sector sanctions.", "EU: Council Regulation 36/2012 — oil import ban and asset freezes.", "US sanctions include Syrian government, oil companies, and individuals.", "ANY entity providing oil to Syrian government-controlled entities risks US secondary sanctions.", "Syria imports refined products — trade with non-government controlled areas is extremely complex.", "Arab League suspended Syria (partially reversed) — regional complications.", "Recommendation: DO NOT TRADE with Syria without specialist legal counsel. Existential compliance risk for Dangote."] },
+
+  TW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Taiwan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  TJ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Tajikistan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  TH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Thailand has open trade.",
+    details:["No restrictions of any kind.", "Imports most refined products.", "Normal commercial terms apply."] },
+
+  TL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Timor-Leste has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  TR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions between Nigeria and Turkey. Note: Turkey continues to buy Russian oil despite G7 position.",
+    details:["No US, EU, or UN sanctions on Turkey-Nigeria trade.", "Turkey is a NATO member but NOT subject to the same Russia-oil restrictions as EU.", "Turkey actively buys Russian crude via Turkstream — this is Turkey's sovereign choice.", "Dangote selling to Turkey is fully legal.", "Normal commercial terms apply."] },
+
+  TM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Turkmenistan has open trade.",
+    details:["No restrictions of any kind.", "Gas exporter — imports some refined products.", "Normal commercial terms apply."] },
+
+  AE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. UAE is a major oil hub and global trade center.",
+    details:["No restrictions of any kind.", "OPEC+ member and major oil exporter (ADNOC).", "Dubai is a global oil trading hub.", "Normal commercial terms apply."] },
+
+  UZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Uzbekistan has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  VN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Vietnam has open trade.",
+    details:["No restrictions of any kind.", "Small domestic production — also imports refined products.", "Normal commercial terms apply."] },
+
+  YE: { level:"🔴", status:"Restricted", dangoteEligible:"⚠️ HIGH CAUTION",
+    summary:"Yemen split: Houthi (Ansar Allah) designated as terrorist by US; Houthi-controlled areas under severe restrictions. Legitimate Yemen government can trade.",
+    details:["US designated Houthis (Ansar Allah) as Specially Designated Global Terrorist (SDGT) in Jan 2024.", "Houthi-controlled areas include Hodeidah port — major fuel entry point.", "UN arms embargo on Houthi forces (Res. 2216).", "Dangote CANNOT supply fuel if it will reach Houthi-controlled entities.", "Legitimate Yemeni internationally-recognised government (ROYG) CAN receive fuel.", "UN humanitarian exemptions for Yemen civilian fuel exist.", "Recommendation: Only supply via UN-vetted channels or ROYG-approved importers."] },
+
+  // ── EUROPE ──────────────────────────────────────────────────────────────────
+  AL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Albania has open trade.",
+    details:["No restrictions of any kind.", "Aligned with EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  AD: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Andorra has open trade.",
+    details:["No restrictions of any kind.", "Microstate — 100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  AT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Austria is an EU member with open trade. Applies EU Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "EU sanctions ban Russian crude/products (since Dec 2022/Feb 2023).", "Austria still receives some Russian pipeline gas but banned oil imports.", "Dangote supply is fully legal and welcomed as Russian oil replacement.", "Normal commercial terms apply."] },
+
+  BA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Bosnia and Herzegovina has open trade.",
+    details:["No restrictions of any kind.", "Aligned with EU on Russia oil ban.", "Normal commercial terms apply."] },
+
+  BG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Bulgaria is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "EU Russia oil ban applies — Bulgaria has temporary derogation for pipeline crude (Druzhba).", "Dangote refined products welcome as alternative.", "Normal commercial terms apply."] },
+
+  BY: { level:"🔴", status:"Restricted", dangoteEligible:"⚠️ HIGH CAUTION",
+    summary:"US, EU, and UK comprehensive sanctions on Belarus following 2020 electoral fraud and forced plane diversion. Oil sector targeted.",
+    details:["EU Council Regulation 2021/1030 — comprehensive Belarus sanctions.", "US OFAC: Belarus-related targeted sanctions.", "Belneftekhim (Belarus state oil company) is on EU/US sanctions lists.", "Belarus imports refined products — but through Russian channels under sanctions.", "Dangote supplying Belarus risks secondary sanctions from EU/US.", "Recommendation: Avoid direct supply to Belarus state entities. High compliance risk."] },
+
+  HR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Croatia is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  CZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Czech Republic is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban (with Druzhba pipeline derogation).", "Dangote supply welcomed as Russian replacement.", "Normal commercial terms apply."] },
+
+  EE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Estonia is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "100% ban on Russian oil imports (ahead of EU schedule).", "Dangote supply actively welcomed.", "Normal commercial terms apply."] },
+
+  FI: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Finland is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  GR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Greece is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  HU: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Hungary is an EU member with open trade. Note: Hungary continues pipeline Russian crude (Druzhba derogation).",
+    details:["No restrictions on Nigerian oil — Dangote supply is fully welcome.", "Hungary has EU derogation to continue Druzhba pipeline Russian crude (landlocked exception).", "This is Hungary's sovereign EU-approved exception, not a sanction issue for Dangote.", "Normal commercial terms apply."] },
+
+  IS: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Iceland has open trade.",
+    details:["No restrictions of any kind.", "Aligned with EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  XK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Kosovo has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  LV: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Latvia is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Strict adherence to Russia oil ban.", "Normal commercial terms apply."] },
+
+  LI: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Liechtenstein has open trade.",
+    details:["No restrictions of any kind.", "Microstate — 100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  LT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Lithuania is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Was first EU country to ban Russian gas — strong alternative supply seeker.", "Normal commercial terms apply."] },
+
+  LU: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Luxembourg is an EU member with open trade.",
+    details:["No restrictions of any kind.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  MT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Malta is an EU member with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent — island nation.", "Normal commercial terms apply."] },
+
+  MD: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Moldova has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  MC: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Monaco has open trade.",
+    details:["No restrictions of any kind.", "Microstate — 100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  ME: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Montenegro has open trade.",
+    details:["No restrictions of any kind.", "EU candidate — aligns with EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  MK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. North Macedonia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  NO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Norway is a major oil producer with open trade.",
+    details:["No restrictions of any kind.", "Major North Sea oil exporter (Equinor).", "Normal commercial terms apply."] },
+
+  PL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Poland is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Poland was among first to voluntarily stop Russian oil imports.", "Actively seeking non-Russian suppliers — Dangote is a strong opportunity.", "Normal commercial terms apply."] },
+
+  PT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Portugal is an EU member with open trade.",
+    details:["No restrictions of any kind.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  RO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Romania is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Small domestic production — also imports.", "Normal commercial terms apply."] },
+
+  RU: { level:"🔴", status:"Exporter", dangoteEligible:"⚠️ SPECIAL NOTE",
+    summary:"Russia is under comprehensive US, EU, UK, G7 oil sanctions since 2022. Russia EXPORTS oil — not a Dangote buyer. Dangote should note G7 price cap and secondary sanction risks.",
+    details:["EU banned Russian crude oil imports (Dec 2022) and refined products (Feb 2023).", "G7 price cap: $60/barrel on Russian crude; $100/barrel for premium products; $45/barrel for discount products.", "US, UK, Canada, Australia, Japan aligned with price cap and import bans.", "Countries that still buy Russian oil: India, China, Turkey, UAE (re-export), some African states.", "Dangote does NOT need to buy Russian oil — Dangote IS the refinery.", "Secondary sanction risk: if Dangote uses any tanker that has carried Russian oil in price-cap-violating trades, it could face US/EU scrutiny.", "Recommendation: Ensure vessels used for Dangote shipments have clean compliance records."] },
+
+  SM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. San Marino has open trade.",
+    details:["No restrictions of any kind.", "Microstate — 100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  RS: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Serbia-Nigeria trade. Serbia has not joined Russia sanctions.",
+    details:["No restrictions on Nigerian oil.", "Serbia did not sanction Russia — continues buying Russian crude through Druzhba pipeline (sovereign choice).", "Dangote supply to Serbia is fully legal.", "Normal commercial terms apply."] },
+
+  SK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Slovakia is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Has Druzhba pipeline derogation (landlocked) — can still import Russian crude temporarily.", "Dangote supply welcomed as transition option.", "Normal commercial terms apply."] },
+
+  SI: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Slovenia is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  UA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Ukraine. Ukraine is the victim of Russian aggression — fully open to trade.",
+    details:["No restrictions of any kind on Nigeria-Ukraine trade.", "Ukraine imports 100% of refined fuel (domestic refineries bombed by Russia).", "Dangote supply to Ukraine is fully legal — would help energy resilience.", "Normal commercial terms apply (note: war risk insurance required for delivery)."] },
+
+  VA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Vatican City has open trade.",
+    details:["No restrictions of any kind.", "Microstate — minimal fuel needs.", "Normal commercial terms apply."] },
+
+  // ── EUROPE (main countries already in dataset) ──────────────────────────────
+  CH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Switzerland-Nigeria trade. Switzerland has adopted EU Russia oil sanctions.",
+    details:["Switzerland aligned with EU Russia oil ban (rare non-EU adoption).", "No restrictions on Nigerian oil.", "Normal commercial terms apply."] },
+
+  SE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Sweden is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  DK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Denmark is an EU member with open trade.",
+    details:["No restrictions on Nigerian oil.", "Applies EU Russia oil ban.", "Normal commercial terms apply."] },
+
+  JP: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Japan-Nigeria trade. Japan is G7 and aligned with Russia oil sanctions.",
+    details:["No restrictions on Nigerian oil.", "Japan adopted G7 Russia oil price cap and phased import ban.", "Japan is world's 3rd largest oil importer — strong Dangote target.", "Normal commercial terms apply."] },
+
+  KR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Korea-Nigeria trade. South Korea aligned with G7 Russia sanctions.",
+    details:["No restrictions on Nigerian oil.", "South Korea stopped Russian oil imports (joined price cap).", "Major oil importer — strong Dangote target.", "Normal commercial terms apply."] },
+
+  IN: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES (NOTE ON RUSSIA)",
+    summary:"No sanctions on India-Nigeria trade. IMPORTANT: India CAN and DOES buy Russian oil — the user note had this reversed. India is NOT blocked from Russian oil.",
+    details:["CORRECTION: India CAN BUY Russian oil — India has not sanctioned Russia.", "It is the EU, US, UK, G7 that have banned/capped Russian oil imports.", "India has massively INCREASED Russian oil purchases since 2022 (at discount).", "India and Nigeria trade freely — no restrictions.", "Dangote can supply India — competing with heavily discounted Russian crude.", "Normal commercial terms apply for Dangote-India trade."] },
+
+  SG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Singapore is a global oil trading hub.",
+    details:["No restrictions of any kind.", "Singapore is the world's top oil trading hub — massive opportunity for Dangote.", "Singapore has adopted Russia-related sanctions (rare for non-Western country).", "Normal commercial terms apply."] },
+
+  ZA: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. South Africa has open trade. South Africa has not sanctioned Russia.",
+    details:["No restrictions on Nigerian or Russian oil.", "South Africa continues to buy Russian oil at discount (sovereign choice).", "Dangote supply to South Africa is fully legal.", "Normal commercial terms apply."] },
+
+  GB: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on UK-Nigeria trade. UK has comprehensive Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "UK Russia (Sanctions) (EU Exit) Regulations 2019 — full Russia oil ban.", "UK actively seeking alternative suppliers — Dangote is ideal.", "Normal commercial terms apply."] },
+
+  DE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Germany-Nigeria trade. Germany leads EU Russia oil sanctions.",
+    details:["No restrictions on Nigerian oil.", "Germany stopped Russian oil imports (major policy shift).", "Strong demand for alternative supply — Dangote opportunity.", "Normal commercial terms apply."] },
+
+  FR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on France-Nigeria trade. France applies EU Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "Normal commercial terms apply."] },
+
+  IT: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Italy-Nigeria trade. Italy applies EU Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "Italy was heavily dependent on Russian energy — actively diversifying.", "Dangote supply is a strategic fit.", "Normal commercial terms apply."] },
+
+  ES: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Spain-Nigeria trade. Spain applies EU Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "Normal commercial terms apply."] },
+
+  NL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Netherlands-Nigeria trade. Rotterdam is the oil trading capital of Europe.",
+    details:["No restrictions on Nigerian oil.", "Rotterdam is Europe's largest port and oil hub — prime Dangote entry point to Europe.", "Normal commercial terms apply."] },
+
+  BE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Belgium-Nigeria trade. Belgium applies EU Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "Antwerp is a major oil terminal hub.", "Normal commercial terms apply."] },
+
+  US: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on US-Nigeria trade. US is world's largest oil producer.",
+    details:["No restrictions on Nigerian oil.", "US has banned Russian oil, Iranian oil, Venezuelan PDVSA oil.", "Dangote supply to US refiners is fully legal.", "Normal commercial terms apply."] },
+
+  BR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Brazil is a major oil producer with open trade.",
+    details:["No restrictions of any kind.", "Petrobras — major oil producer, also imports refined products.", "Normal commercial terms apply."] },
+
+  AU: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Australia-Nigeria trade. Australia applies G7 Russia oil sanctions.",
+    details:["No restrictions on Nigerian oil.", "Australia has banned Russian oil imports (joined G7).", "100% fuel import dependent — strong Dangote target.", "Normal commercial terms apply."] },
+
+  NZ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on New Zealand-Nigeria trade. NZ aligned with G7.",
+    details:["No restrictions on Nigerian oil.", "100% import dependent.", "Normal commercial terms apply."] },
+
+  IE: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions on Ireland-Nigeria trade. Ireland is EU member applying Russia oil ban.",
+    details:["No restrictions on Nigerian oil.", "100% import dependent.", "Normal commercial terms apply."] },
+
+  // ── OCEANIA ──────────────────────────────────────────────────────────────────
+  FJ: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Fiji has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  KI: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Kiribati has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  MH: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Marshall Islands has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  FM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Micronesia has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  NR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Nauru has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  PW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Palau has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  PG: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Papua New Guinea has open trade.",
+    details:["No restrictions of any kind.", "Oil and LNG producer — also imports refined products.", "Normal commercial terms apply."] },
+
+  WS: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Samoa has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  SB: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Solomon Islands has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  TO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Tonga has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  TV: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Tuvalu has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  VU: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"No sanctions. Vanuatu has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  // ── TERRITORIES / NON-OFFICIAL ───────────────────────────────────────────────
+  PR: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Puerto Rico is a US territory — US trade rules apply. No restrictions on Nigerian oil.",
+    details:["US Jones Act may affect shipping logistics (US-flagged vessels for Puerto Rico ports).", "No sanctions on Nigerian oil.", "Normal commercial terms apply."] },
+
+  AW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Aruba is a Dutch territory with open trade.",
+    details:["No restrictions of any kind.", "Has Valero refinery (now closed) — imports 100% fuel.", "Normal commercial terms apply."] },
+
+  CW: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Curaçao is a Dutch territory with open trade. Note: PDVSA refinery (ISLA) — do not confuse with Venezuela sanctions.",
+    details:["Curaçao itself has no sanctions.", "The ISLA refinery was leased to PDVSA (Venezuela) — now operated under new management.", "PDVSA-linked contracts may carry sanction risk — verify current ownership before supplying ISLA.", "Normal commercial terms apply for direct Curaçao fuel imports."] },
+
+  GL: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Greenland is a Danish territory with open trade.",
+    details:["No restrictions of any kind.", "Applies Danish/EU standards.", "Normal commercial terms apply."] },
+
+  HK: { level:"🟡", status:"Watch",   dangoteEligible:"✅ YES (with awareness)",
+    summary:"Hong Kong SAR — open trade but increasing alignment with China. No oil trade sanctions.",
+    details:["No direct oil trade sanctions.", "Hong Kong maintains separate customs territory from mainland China.", "Some US/EU concerns about re-export to sanctioned parties — conduct KYC on buyers.", "Normal commercial terms apply for direct fuel imports."] },
+
+  MO: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Macau SAR has open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  EH: { level:"🟡", status:"Complex", dangoteEligible:"✅ YES (complex)",
+    summary:"Western Sahara — disputed territory administered by Morocco. No oil trade sanctions, but legal complexity over territorial sovereignty.",
+    details:["No US, EU, or UN oil trade embargo.", "Morocco administers the territory — fuel imported through Morocco.", "EU Court of Justice has ruled EU-Morocco trade agreements don't automatically apply to W. Sahara.", "Dangote can supply through Morocco for W. Sahara distribution.", "Normal commercial terms apply — sovereignty dispute is a political, not trade-sanctions, issue."] },
+
+  NC: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"New Caledonia is a French territory with open trade.",
+    details:["No restrictions of any kind.", "Applies French/EU standards.", "Normal commercial terms apply."] },
+
+  PF: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"French Polynesia is a French territory with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  CK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Cook Islands is a New Zealand associated state with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  KY: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Cayman Islands is a UK overseas territory with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  BM: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Bermuda is a UK overseas territory with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+
+  GI: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Gibraltar is a UK overseas territory with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent — major bunkering port.", "Normal commercial terms apply."] },
+
+  FK: { level:"🟢", status:"Open",    dangoteEligible:"✅ YES",
+    summary:"Falkland Islands is a UK overseas territory with open trade.",
+    details:["No restrictions of any kind.", "100% fuel import dependent.", "Normal commercial terms apply."] },
+};
