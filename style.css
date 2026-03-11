@@ -609,3 +609,80 @@ body {
   .cards-grid { grid-template-columns: 1fr; }
   .modal-stats { grid-template-columns: 1fr; }
 }
+
+/* ── Clickable KPI Card ──────────────────────────────── */
+.kpi-clickable {
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.kpi-clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(246, 166, 35, 0.22);
+  border-color: var(--dangote);
+}
+.kpi-expand-hint {
+  font-size: 0.64rem;
+  color: var(--dangote);
+  margin-top: 0.35rem;
+  opacity: 0.85;
+  letter-spacing: 0.03em;
+}
+
+/* ── Countries List Modal Grid ───────────────────────── */
+.clm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.45rem;
+  max-height: 58vh;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+.clm-grid::-webkit-scrollbar { width: 4px; }
+.clm-grid::-webkit-scrollbar-track { background: var(--bg-card); }
+.clm-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.clm-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.6rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+.clm-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(246,166,35,0.18);
+  border-color: var(--dangote);
+}
+.clm-item.clm-CRITICAL { border-left: 3px solid var(--critical); }
+.clm-item.clm-WATCH    { border-left: 3px solid var(--watch); }
+.clm-item.clm-NORMAL   { border-left: 3px solid var(--normal); }
+
+.clm-flag { font-size: 1.25rem; line-height: 1; }
+.clm-name {
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.clm-days {
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-family: monospace;
+}
+.clm-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.1rem;
+}
+
+@media (max-width: 500px) {
+  .clm-grid { grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); }
+}

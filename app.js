@@ -94,9 +94,10 @@ function renderKPIs() {
   const lowestDays = Math.min(...countries.map(c => c.reserveDays));
   const lowestCountry = countries.find(c => c.reserveDays === lowestDays);
   const totalStations = getDisruptedStations().length;
+  const continentCount = new Set(countries.map(c => c.continent)).size;
 
   const kpis = [
-    { label: "Countries Tracked", value: countries.length, cls: "accent", sub: "across 5 continents" },
+    { label: "Countries Tracked", value: countries.length, cls: "accent", sub: `across ${continentCount} continents`, clickable: true },
     { label: "CRITICAL Status", value: critical, cls: "critical", sub: "below 45-day threshold" },
     { label: "WATCH Status", value: watch, cls: "watch", sub: "45–89 day range" },
     { label: "Lowest Reserve", value: `${lowestDays}d`, cls: "critical", sub: `${lowestCountry.flag} ${lowestCountry.name}` },
@@ -105,17 +106,21 @@ function renderKPIs() {
   ];
 
   document.getElementById("kpiRow").innerHTML = kpis.map(k => `
-    <div class="kpi-card">
+    <div class="kpi-card${k.clickable ? " kpi-clickable" : ""}" ${k.clickable ? 'onclick="openCountriesListModal()" title="Click to view all tracked countries"' : ""}>
       <div class="kpi-label">${k.label}</div>
       <div class="kpi-value ${k.cls}">${k.value}</div>
       <div class="kpi-sub">${k.sub}</div>
+      ${k.clickable ? '<div class="kpi-expand-hint">↗ Click to expand</div>' : ""}
     </div>
   `).join("");
 }
 
 // ─── Bar Chart ────────────────────────────────────────
 function renderBarChart() {
-  const sorted = [...OIL_DATA.countries].sort((a, b) => a.reserveDays - b.reserveDays);
+  // Show only the 40 most critical countries to keep chart readable
+  const sorted = [...OIL_DATA.countries]
+    .sort((a, b) => a.reserveDays - b.reserveDays)
+    .slice(0, 40);
   const labels  = sorted.map(c => `${c.flag} ${c.name}`);
   const data    = sorted.map(c => c.reserveDays);
   const colors  = sorted.map(c =>
@@ -457,6 +462,98 @@ function renderDangoteProfile() {
       `).join("")}
     </div>
   `;
+}
+
+// ─── Countries List Modal (Countries Tracked KPI click) ───────────────────────
+function openCountriesListModal() {
+  const countries  = OIL_DATA.countries;
+  const continents = [...new Set(countries.map(c => c.continent))].sort();
+  const total      = countries.length;
+  const critical   = countries.filter(c => c.status === "CRITICAL").length;
+  const watch      = countries.filter(c => c.status === "WATCH").length;
+  const normal     = countries.filter(c => c.status === "NORMAL").length;
+
+  const continentOptions = continents.map(c =>
+    `<option value="${c}">${c}</option>`
+  ).join("");
+
+  document.getElementById("modalContent").innerHTML = `
+    <div style="margin-bottom:1rem;">
+      <div class="modal-country-name" style="font-size:1.4rem;">🌍 All ${total} Countries Tracked</div>
+      <p style="color:var(--text-muted);font-size:0.83rem;margin-top:0.3rem;">
+        Real-time oil reserve monitoring worldwide. Click any country for full details.
+      </p>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.75rem;">
+        <span style="background:#e74c3c22;color:#e74c3c;border:1px solid #e74c3c44;border-radius:12px;padding:0.2rem 0.7rem;font-size:0.75rem;font-weight:700;">🔴 ${critical} Critical</span>
+        <span style="background:#f39c1222;color:#f39c12;border:1px solid #f39c1244;border-radius:12px;padding:0.2rem 0.7rem;font-size:0.75rem;font-weight:700;">🟡 ${watch} Watch</span>
+        <span style="background:#27ae6022;color:#27ae60;border:1px solid #27ae6044;border-radius:12px;padding:0.2rem 0.7rem;font-size:0.75rem;font-weight:700;">🟢 ${normal} Normal</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.6rem;margin-bottom:0.9rem;flex-wrap:wrap;">
+      <input type="text" id="clmSearch" placeholder="🔍 Search countries…"
+        oninput="filterCountriesListModal()"
+        style="flex:1;min-width:160px;padding:0.45rem 0.75rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.82rem;">
+      <select id="clmStatus" onchange="filterCountriesListModal()"
+        style="padding:0.45rem 0.6rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.82rem;">
+        <option value="">All Status</option>
+        <option value="CRITICAL">🔴 Critical</option>
+        <option value="WATCH">🟡 Watch</option>
+        <option value="NORMAL">🟢 Normal</option>
+      </select>
+      <select id="clmContinent" onchange="filterCountriesListModal()"
+        style="padding:0.45rem 0.6rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.82rem;">
+        <option value="">All Continents</option>
+        ${continentOptions}
+      </select>
+    </div>
+
+    <div id="clmResultCount" style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;"></div>
+    <div id="clmCountGrid" class="clm-grid"></div>
+  `;
+
+  filterCountriesListModal();
+  document.getElementById("modalOverlay").classList.add("open");
+}
+
+function filterCountriesListModal() {
+  const q         = (document.getElementById("clmSearch")?.value || "").toLowerCase();
+  const status    = document.getElementById("clmStatus")?.value || "";
+  const continent = document.getElementById("clmContinent")?.value || "";
+
+  let list = [...OIL_DATA.countries];
+  if (q)         list = list.filter(c => c.name.toLowerCase().includes(q) || c.continent.toLowerCase().includes(q));
+  if (status)    list = list.filter(c => c.status === status);
+  if (continent) list = list.filter(c => c.continent === continent);
+  list.sort((a, b) => a.reserveDays - b.reserveDays);
+
+  const countEl = document.getElementById("clmResultCount");
+  if (countEl) countEl.textContent = `Showing ${list.length} of ${OIL_DATA.countries.length} countries`;
+
+  const grid = document.getElementById("clmCountGrid");
+  if (!grid) return;
+
+  if (list.length === 0) {
+    grid.innerHTML = `<p style="color:var(--text-muted);padding:1rem 0;grid-column:1/-1;">No countries match the filter.</p>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(c => `
+    <div class="clm-item clm-${c.status}" onclick="openCountryFromList('${c.id}')" title="${c.name} — Click for full details">
+      <div class="clm-flag">${c.flag}</div>
+      <div class="clm-name">${c.name}</div>
+      <div class="clm-days" style="color:${getStatusColor(c.status)}">${c.reserveDays}d</div>
+      <div class="clm-meta">
+        <span class="card-status-badge badge-${c.status}" style="font-size:0.58rem;">${c.status}</span>
+        <span style="font-size:0.65rem;color:var(--text-muted);">${c.continent}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function openCountryFromList(countryId) {
+  // Close the list modal first, then open the country detail modal
+  openModal(countryId);
 }
 
 // ─── Modal ────────────────────────────────────────────
