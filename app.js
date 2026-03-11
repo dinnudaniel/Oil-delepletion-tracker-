@@ -96,22 +96,104 @@ function renderKPIs() {
   const continentCount = new Set(countries.map(c => c.continent)).size;
 
   const kpis = [
-    { label: "Countries Tracked", value: countries.length, cls: "accent", sub: `across ${continentCount} continents`, clickable: true },
-    { label: "CRITICAL Status", value: critical, cls: "critical", sub: "below 45-day threshold" },
-    { label: "WATCH Status", value: watch, cls: "watch", sub: "45–89 day range" },
-    { label: "Lowest Reserve", value: `${lowestDays}d`, cls: "critical", sub: `${lowestCountry.flag} ${lowestCountry.name}` },
-    { label: "Dangote Targets", value: opps, cls: "accent", sub: "high-opportunity countries" },
-    { label: "Disrupted Facilities", value: totalStations, cls: "watch", sub: "stations & depots" },
+    { label: "Countries Tracked",   value: countries.length,      cls: "accent",    sub: `across ${continentCount} continents`,  fn: "openCountriesListModal()" },
+    { label: "CRITICAL Status",     value: critical,               cls: "critical",  sub: "below 45-day threshold",               fn: "openKpiModal('critical')" },
+    { label: "WATCH Status",        value: watch,                  cls: "watch",     sub: "45–89 day range",                      fn: "openKpiModal('watch')" },
+    { label: "Lowest Reserve",      value: `${lowestDays}d`,      cls: "critical",  sub: `${lowestCountry.flag} ${lowestCountry.name}`, fn: `openModal('${lowestCountry.id}')` },
+    { label: "Dangote Targets",     value: opps,                   cls: "accent",    sub: "high-opportunity countries",           fn: "openKpiModal('dangote')" },
+    { label: "Disrupted Facilities",value: totalStations,          cls: "watch",     sub: "stations & depots",                   fn: "openKpiModal('disrupted')" },
   ];
 
   document.getElementById("kpiRow").innerHTML = kpis.map(k => `
-    <div class="kpi-card${k.clickable ? " kpi-clickable" : ""}" ${k.clickable ? 'onclick="openCountriesListModal()" title="Click to view all tracked countries"' : ""}>
+    <div class="kpi-card kpi-clickable" onclick="${k.fn}" title="Click to expand">
       <div class="kpi-label">${k.label}</div>
       <div class="kpi-value ${k.cls}">${k.value}</div>
       <div class="kpi-sub">${k.sub}</div>
-      ${k.clickable ? '<div class="kpi-expand-hint">↗ Click to expand</div>' : ""}
+      <div class="kpi-expand-hint">↗ Click to expand</div>
     </div>
   `).join("");
+}
+
+// ─── KPI Expand Modals ────────────────────────────────
+function openKpiModal(type) {
+  const countries = [
+    ...(OIL_DATA.countries || []),
+    ...(OIL_DATA.nonOfficialTerritories || []),
+  ];
+  let html = "";
+
+  if (type === "critical") {
+    const list = countries.filter(c => c.status === "CRITICAL")
+                          .sort((a, b) => a.reserveDays - b.reserveDays);
+    html = `<h3 style="color:var(--critical);margin:0 0 1rem">🔴 CRITICAL Countries (${list.length})</h3>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:.85rem">Below 45-day reserve threshold — sorted by urgency. Click any row to open full details.</p>
+      <table class="expand-table">
+        <thead><tr><th>Country</th><th>Days Left</th><th>Import %</th><th>Score</th></tr></thead>
+        <tbody>${list.map(c => `
+          <tr class="expand-row" onclick="openModal('${c.id}')">
+            <td>${c.flag} <b>${c.name}</b><br><small style="color:var(--muted)">${c.continent}</small></td>
+            <td style="color:var(--critical);font-weight:700;font-size:1.1rem">${c.reserveDays}d</td>
+            <td>${c.importDependency}%</td>
+            <td style="color:var(--dangote)">${c.opportunityScore}/100</td>
+          </tr>
+          <tr><td colspan="4" style="color:var(--muted);font-size:.8rem;padding:.25rem .75rem 0.6rem">${c.alert}</td></tr>
+        `).join("")}</tbody>
+      </table>`;
+
+  } else if (type === "watch") {
+    const list = countries.filter(c => c.status === "WATCH")
+                          .sort((a, b) => a.reserveDays - b.reserveDays);
+    html = `<h3 style="color:var(--watch);margin:0 0 1rem">🟡 WATCH Countries (${list.length})</h3>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:.85rem">45–89 days remaining — approaching critical. Click any row to open full details.</p>
+      <table class="expand-table">
+        <thead><tr><th>Country</th><th>Days Left</th><th>Import %</th><th>Trend</th></tr></thead>
+        <tbody>${list.map(c => `
+          <tr class="expand-row" onclick="openModal('${c.id}')">
+            <td>${c.flag} <b>${c.name}</b><br><small style="color:var(--muted)">${c.continent}</small></td>
+            <td style="color:var(--watch);font-weight:700;font-size:1.1rem">${c.reserveDays}d</td>
+            <td>${c.importDependency}%</td>
+            <td>${trendIcon(c.trend)} ${c.trend}</td>
+          </tr>
+          <tr><td colspan="4" style="color:var(--muted);font-size:.8rem;padding:.25rem .75rem 0.6rem">${c.alert}</td></tr>
+        `).join("")}</tbody>
+      </table>`;
+
+  } else if (type === "dangote") {
+    const list = countries.filter(c => c.dangoteOpportunity)
+                          .sort((a, b) => b.opportunityScore - a.opportunityScore);
+    html = `<h3 style="color:var(--dangote);margin:0 0 1rem">🎯 Dangote Deal Targets (${list.length})</h3>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:.85rem">Ranked by opportunity score. Click any row to see buyers & contacts.</p>
+      <table class="expand-table">
+        <thead><tr><th>Country</th><th>Score</th><th>Days Left</th><th>Import %</th></tr></thead>
+        <tbody>${list.map((c, i) => `
+          <tr class="expand-row" onclick="openModal('${c.id}')">
+            <td>#${i+1} ${c.flag} <b>${c.name}</b><br><small style="color:var(--muted)">${c.continent}</small></td>
+            <td><span style="color:var(--dangote);font-weight:700;font-size:1.1rem">${c.opportunityScore}/100</span></td>
+            <td style="color:${c.status==='CRITICAL'?'var(--critical)':'var(--watch)'}">${c.reserveDays}d</td>
+            <td>${c.importDependency}%</td>
+          </tr>
+          <tr><td colspan="4" style="color:#b8966a;font-size:.8rem;padding:.25rem .75rem 0.6rem;font-style:italic">${c.notes||''}</td></tr>
+        `).join("")}</tbody>
+      </table>`;
+
+  } else if (type === "disrupted") {
+    const disrupted = getDisruptedStations();
+    html = `<h3 style="color:var(--watch);margin:0 0 1rem">⛽ Disrupted Facilities (${disrupted.length})</h3>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:.85rem">Stations, refineries & depots with supply issues. Click row to open country details.</p>
+      <table class="expand-table">
+        <thead><tr><th>Facility</th><th>Location</th><th>Status</th></tr></thead>
+        <tbody>${disrupted.map(s => `
+          <tr class="expand-row" onclick="openModal('${s.countryId}')">
+            <td><b>${s.name}</b><br><small style="color:var(--muted)">${s.type}</small></td>
+            <td>${s.city}<br><small style="color:var(--muted)">${s.countryName}</small></td>
+            <td><span class="status-pill ${statusPillClass(s.status)}">${s.status}</span></td>
+          </tr>
+        `).join("")}</tbody>
+      </table>`;
+  }
+
+  document.getElementById("modalContent").innerHTML = html;
+  document.getElementById("modalOverlay").classList.add("open");
 }
 
 // ─── Bar Chart ────────────────────────────────────────
@@ -616,7 +698,9 @@ function openModal(countryId) {
           <div class="buyer-item">
             <div class="buyer-name">${b.name} <span class="buyer-type">${b.type}</span></div>
             <div class="buyer-role">${b.role}</div>
-            <div class="buyer-contact">📞 ${b.contact}</div>
+            ${b.phone ? `<div class="buyer-contact">📞 ${b.phone}</div>` : ""}
+            ${b.email ? `<div class="buyer-contact">📧 <a href="mailto:${b.email}" style="color:var(--accent)">${b.email}</a></div>` : ""}
+            ${!b.phone && !b.email && b.contact ? `<div class="buyer-contact">🌐 ${b.contact}</div>` : ""}
           </div>`).join("")}
       </div>
     </div>` : "";
@@ -625,14 +709,31 @@ function openModal(countryId) {
   const newStations = detail.newGasStations || c.newGasStations || [];
   const newStationsHTML = newStations.length ? `
     <div class="modal-section">
-      <h4>🚧 New Gas Stations / Projects in Progress</h4>
+      <h4>🚧 New Projects / Gas Stations in Progress</h4>
       <div class="new-stations-list">
-        ${newStations.map(s => `
+        ${newStations.map(s => {
+          const pct = s.completionPct || 0;
+          const progressBar = pct ? `
+            <div class="ns-progress-wrap">
+              <div class="ns-progress-label">Construction progress: <b>${pct}%</b></div>
+              <div class="ns-progress-track"><div class="ns-progress-fill" style="width:${pct}%"></div></div>
+            </div>` : "";
+          const dealWin = s.dealWindowNote ? `
+            <div class="ns-deal-window">💼 <b>Deal Window:</b> ${s.dealWindowNote}</div>` : "";
+          const contacts = [
+            s.phone ? `📞 ${s.phone}` : "",
+            s.email ? `📧 <a href="mailto:${s.email}" style="color:var(--accent)">${s.email}</a>` : "",
+            (!s.phone && !s.email && s.contact) ? `📞 ${s.contact}` : "",
+          ].filter(Boolean).join("  &nbsp;");
+          return `
           <div class="new-station-item">
             <div class="ns-name">${s.name}</div>
             <div class="ns-meta">${s.location} · <span class="ns-status">${s.status}</span> · ETA: ${s.eta}</div>
-            <div class="ns-contact">📞 ${s.contact}</div>
-          </div>`).join("")}
+            ${progressBar}
+            ${dealWin}
+            ${contacts ? `<div class="ns-contact">${contacts}</div>` : ""}
+          </div>`;
+        }).join("")}
       </div>
     </div>` : "";
 
@@ -684,9 +785,21 @@ function openModal(countryId) {
           <div class="modal-stat-label">Current Reserves</div>
           <div class="modal-stat-value">${c.currentReserves_mb.toLocaleString()} M bbl</div>
         </div>
-        <div class="modal-stat-item">
-          <div class="modal-stat-label">Daily Consumption</div>
+        <div class="modal-stat-item${detail.consumptionBreakdown ? ' modal-stat-expandable' : ''}"
+             ${detail.consumptionBreakdown ? `onclick="toggleConsumptionBreakdown('${countryId}')" title="Click to see sector breakdown"` : ''}>
+          <div class="modal-stat-label">Daily Consumption ${detail.consumptionBreakdown ? '<span class="expand-hint-inline">▼ tap to expand</span>' : ''}</div>
           <div class="modal-stat-value">${formatBPD(c.dailyConsumption_bpd)}</div>
+          ${detail.consumptionBreakdown ? `
+          <div class="consumption-breakdown" id="cb-${countryId}" style="display:none">
+            ${detail.consumptionBreakdown.map(row => `
+              <div class="cb-row">
+                <div class="cb-sector">${row.sector}</div>
+                <div class="cb-bar-wrap"><div class="cb-bar" style="width:${row.pct}%"></div></div>
+                <div class="cb-pct">${row.pct}%</div>
+                <div class="cb-bpd">${row.bpd.toLocaleString()} BPD</div>
+                <div class="cb-note">${row.note}</div>
+              </div>`).join("")}
+          </div>` : ""}
         </div>
         <div class="modal-stat-item">
           <div class="modal-stat-label">Import Dependency</div>
@@ -726,6 +839,12 @@ function openModal(countryId) {
 
 function closeModal() {
   document.getElementById("modalOverlay").classList.remove("open");
+}
+
+function toggleConsumptionBreakdown(countryId) {
+  const el = document.getElementById(`cb-${countryId}`);
+  if (!el) return;
+  el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
 // ─── Telegram Integration ─────────────────────────────

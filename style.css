@@ -858,3 +858,83 @@ body {
   font-weight: 700;
   text-transform: uppercase;
 }
+
+/* ── KPI Expand Table (openKpiModal) ─────────────────── */
+.expand-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.expand-table thead th {
+  text-align: left;
+  padding: 0.45rem 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+.expand-table tbody td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #ffffff08;
+  vertical-align: top;
+}
+.expand-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.expand-row:hover { background: #ffffff0a; }
+
+/* ── Consumption Breakdown ───────────────────────────── */
+.modal-stat-expandable { cursor: pointer; }
+.modal-stat-expandable:hover { background: #ffffff0a; border-radius: 8px; }
+.expand-hint-inline {
+  font-size: 0.65rem;
+  color: var(--accent);
+  margin-left: 0.4rem;
+  font-weight: 400;
+}
+.consumption-breakdown {
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.cb-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 42px 90px;
+  gap: 0.3rem 0.6rem;
+  align-items: center;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #ffffff06;
+}
+.cb-sector { font-size: 0.78rem; font-weight: 600; color: var(--text-primary); }
+.cb-bar-wrap { background: #ffffff12; border-radius: 4px; height: 8px; overflow: hidden; }
+.cb-bar { height: 100%; background: var(--accent); border-radius: 4px; }
+.cb-pct { font-size: 0.78rem; font-weight: 700; color: var(--accent); text-align: right; }
+.cb-bpd { font-size: 0.72rem; color: var(--text-muted); }
+.cb-note { grid-column: 1 / -1; font-size: 0.72rem; color: var(--text-muted); padding-left: 0.5rem; font-style: italic; }
+
+/* ── Project Progress Bar ────────────────────────────── */
+.ns-progress-wrap { margin: 0.4rem 0 0.2rem; }
+.ns-progress-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+.ns-progress-track {
+  height: 8px;
+  background: #ffffff12;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ns-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #27ae60, #2ecc71);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+.ns-deal-window {
+  margin: 0.4rem 0;
+  font-size: 0.78rem;
+  color: #f39c12;
+  background: #f39c1212;
+  border: 1px solid #f39c1233;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}

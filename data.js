@@ -3741,24 +3741,36 @@ const COUNTRY_DETAILS = {
   "HT": {
     isOilProducer: false,
     productionNote: "No domestic oil production. Haiti imports 100% of petroleum products.",
+    consumptionBreakdown: [
+      { sector: "Road Transport",     bpd: 7500, pct: 50, note: "Port-au-Prince dominates; informal transport sector" },
+      { sector: "Power Generation",   bpd: 4500, pct: 30, note: "Diesel generators — grid is unreliable nationwide" },
+      { sector: "Domestic / Cooking", bpd: 1500, pct: 10, note: "Kerosene cooking fuel — rural areas" },
+      { sector: "Industry",           bpd: 1500, pct: 10, note: "Small manufacturing, assembly zones" },
+    ],
     topOilBuyers: [
-      { name: "SOGENER", type: "Power & Fuel Importer", contact: "www.sogeener.com", role: "Largest private fuel importer" },
-      { name: "Rubis Énergie Haiti", type: "Retail Distributor", contact: "www.rubis.fr", role: "Operates ~60 stations nationwide" },
-      { name: "National Office of Mining & Energy (BMPAD)", type: "State Procurement", contact: "bmpad.ht", role: "State fuel import authority" },
+      { name: "SOGENER",                                    type: "Power & Fuel Importer", phone: "+509 2812 0000", email: "info@sogeener.com",  contact: "www.sogeener.com", role: "Largest private fuel importer & power provider" },
+      { name: "Rubis Énergie Haiti",                        type: "Retail Distributor",    phone: "+509 2813 2000", email: "haiti@rubis.com",      contact: "www.rubis.fr",    role: "Operates ~60 stations nationwide" },
+      { name: "National Office of Mining & Energy (BMPAD)", type: "State Procurement",     phone: "+509 2943 0000", email: "bmpad@bmpad.gouv.ht",  contact: "bmpad.ht",       role: "State fuel import authority — govt tenders" },
     ],
     newGasStations: [
-      { name: "Rubis Port-au-Prince East Depot", location: "Port-au-Prince Est", status: "Planned", eta: "2026", contact: "haiti@rubis.com" },
+      { name: "Rubis Port-au-Prince East Depot", location: "Port-au-Prince Est", status: "Planned", eta: "2026", contact: "haiti@rubis.com", phone: "+509 2813 2000", email: "haiti@rubis.com", completionPct: 15, dealWindowNote: "Early planning stage. 12+ months to opening. Best time to negotiate supply terms — market is desperate." },
     ],
   },
   // ── Australia ──────────────────────────────────────
   "AU": {
     isOilProducer: true,
     productionNote: "Produces ~350K BPD crude but refines less than 15% domestically. Net importer of refined products.",
+    consumptionBreakdown: [
+      { sector: "Road Transport",     bpd: 630000, pct: 45, note: "Passenger & freight — long distances, no rail alternative" },
+      { sector: "Mining & Industry",  bpd: 420000, pct: 30, note: "Mining trucks, site power — WA Pilbara is biggest user" },
+      { sector: "Aviation",           bpd: 210000, pct: 15, note: "Domestic + international — Sydney, Melbourne, Brisbane hubs" },
+      { sector: "Marine / Other",     bpd: 140000, pct: 10, note: "Shipping, agriculture, defence" },
+    ],
     topOilBuyers: [
-      { name: "Viva Energy Australia", type: "Importer & Refiner", contact: "www.vivaenergy.com.au", role: "Largest importer of refined products" },
-      { name: "Ampol", type: "Importer & Retailer", contact: "www.ampol.com.au", role: "~1,900 retail stations, major importer" },
-      { name: "BP Australia", type: "Distributor", contact: "www.bp.com/australia", role: "Wholesale fuel supply" },
-      { name: "Caltex/Chevron", type: "Wholesale", contact: "www.caltex.com.au", role: "Commercial & aviation fuel" },
+      { name: "Viva Energy Australia", type: "Importer & Refiner", phone: "+61 3 8823 4000", email: "investor@vivaenergy.com.au", contact: "www.vivaenergy.com.au", role: "Largest importer of refined products" },
+      { name: "Ampol",                 type: "Importer & Retailer", phone: "+61 2 9250 5000", email: "investor.relations@ampol.com.au", contact: "www.ampol.com.au", role: "~1,900 retail stations, major importer" },
+      { name: "BP Australia",          type: "Distributor",          phone: "+61 3 9268 4111", email: "australia@bp.com",                 contact: "www.bp.com/australia", role: "Wholesale fuel supply" },
+      { name: "Caltex/Chevron",        type: "Wholesale",            phone: "+61 2 9230 2000", email: "australia@chevron.com",            contact: "www.caltex.com.au", role: "Commercial & aviation fuel" },
     ],
     newGasStations: [
       { name: "Ampol Yatala Energy Hub", location: "Gold Coast, QLD", status: "Under Construction", eta: "2026 Q2", contact: "investor.relations@ampol.com.au" },
@@ -3919,13 +3931,20 @@ const COUNTRY_DETAILS = {
   "ET": {
     isOilProducer: false,
     productionNote: "No commercial oil production. Landlocked — massive logistics challenge for fuel imports.",
+    consumptionBreakdown: [
+      { sector: "Road Transport",         bpd: 40500, pct: 45, note: "Addis Ababa, Dire Dawa, Hawassa corridors dominate" },
+      { sector: "Industry & Mfg.",        bpd: 27000, pct: 30, note: "Cement, textiles, Hawassa Industrial Park" },
+      { sector: "Domestic / Cooking",     bpd: 13500, pct: 15, note: "Kerosene in rural areas — high growth demand" },
+      { sector: "Aviation",               bpd:  9000, pct: 10, note: "Ethiopian Airlines — Africa's largest carrier" },
+    ],
     topOilBuyers: [
-      { name: "Ethiopian Petroleum Supply Enterprise (EPSE)", type: "State Monopoly", contact: "www.epse.gov.et", role: "Sole authorised petroleum importer" },
-      { name: "Oil Libya Ethiopia", type: "Distributor", contact: "+251 11 557 8888", role: "Retail network in Addis Ababa" },
+      { name: "Ethiopian Petroleum Supply Enterprise (EPSE)", type: "State Monopoly", phone: "+251 11 551 1244", email: "info@epse.gov.et", contact: "www.epse.gov.et", role: "Sole authorised petroleum importer for all Ethiopia" },
+      { name: "Oil Libya Ethiopia", type: "Distributor", phone: "+251 11 557 8888", email: "ethiopia@oillibya.com", contact: "+251 11 557 8888", role: "Retail network in Addis Ababa & major cities" },
+      { name: "TotalEnergies Ethiopia", type: "Retailer", phone: "+251 11 661 2550", email: "ethiopia@totalenergies.com", contact: "ethiopia@totalenergies.com", role: "Growing retail network, industrial supply" },
     ],
     newGasStations: [
-      { name: "EPSE Dire Dawa Terminal Expansion", location: "Dire Dawa", status: "Under Construction", eta: "2026 Q3", contact: "info@epse.gov.et" },
-      { name: "TotalEnergies Hawassa Station", location: "Hawassa", status: "Planned 2026", eta: "2026 Q4", contact: "ethiopia@totalenergies.com" },
+      { name: "EPSE Dire Dawa Terminal Expansion", location: "Dire Dawa", status: "Under Construction", eta: "2026 Q3", contact: "info@epse.gov.et", phone: "+251 11 551 1244", email: "info@epse.gov.et", completionPct: 55, dealWindowNote: "~6 months to completion. Secure supply contract NOW to be first-load supplier when terminal opens." },
+      { name: "TotalEnergies Hawassa Station",      location: "Hawassa",   status: "Planned 2026",      eta: "2026 Q4", contact: "ethiopia@totalenergies.com", phone: "+251 11 661 2550", email: "ethiopia@totalenergies.com", completionPct: 20, dealWindowNote: "Early planning stage. 9–12 months before launch. Ideal window to negotiate long-term supply deal." },
     ],
   },
   // ── Nepal ──────────────────────────────────────────
@@ -3953,6 +3972,13 @@ const COUNTRY_DETAILS = {
   "ZA": {
     isOilProducer: true,
     productionNote: "Produces some crude but refinery capacity collapsing. BP Durban closing, Astron reduced. Major import dependency growing.",
+    consumptionBreakdown: [
+      { sector: "Road Transport",     bpd: 280000, pct: 50, note: "Gauteng province alone uses ~40% of national road fuel" },
+      { sector: "Mining & Industry",  bpd: 168000, pct: 30, note: "Deep-level gold/platinum mines — major diesel consumers" },
+      { sector: "Domestic / Retail",  bpd:  56000, pct: 10, note: "Inland areas most affected by current shortages" },
+      { sector: "Aviation",           bpd:  33600, pct:  6, note: "OR Tambo (Joburg) & Cape Town International" },
+      { sector: "Agriculture",        bpd:  22400, pct:  4, note: "Seasonal peaks — harvest periods see acute demand" },
+    ],
     topOilBuyers: [
       { name: "Sasol Oil (Pty) Ltd", type: "Producer & Importer", phone: "+27 10 344 5000", email: "investor.relations@sasol.com", role: "Largest domestic fuel producer. Also imports refined products." },
       { name: "TotalEnergies South Africa", type: "Importer & Distributor", phone: "+27 11 778 2000", email: "southafrica@totalenergies.com", role: "Major retail distributor, 650+ service stations." },
