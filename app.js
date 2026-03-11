@@ -18,13 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderAll() {
-  renderKPIs();
-  renderBarChart();
-  renderCountryCards();
-  renderOpportunities();
-  renderStations();
-  renderAllCountriesTable();
-  renderDangoteProfile();
+  try { renderKPIs(); } catch(e) { console.error("renderKPIs:", e); }
+  try { renderBarChart(); } catch(e) { console.error("renderBarChart:", e); }
+  try { renderCountryCards(); } catch(e) { console.error("renderCountryCards:", e); }
+  try { renderOpportunities(); } catch(e) { console.error("renderOpportunities:", e); }
+  try { renderStations(); } catch(e) { console.error("renderStations:", e); }
+  try { renderAllCountriesTable(); } catch(e) { console.error("renderAllCountriesTable:", e); }
+  try { renderDangoteProfile(); } catch(e) { console.error("renderDangoteProfile:", e); }
 }
 
 function manualRefresh() {
