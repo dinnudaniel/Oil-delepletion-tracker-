@@ -146,6 +146,30 @@
   </div>
 </div>
 
+<!-- ===== TELEGRAM SETTINGS MODAL ===== -->
+<div class="modal-overlay" id="tgSettingsOverlay" onclick="closeTelegramSettings()">
+  <div class="modal tg-settings-modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeTelegramSettings()">✕</button>
+    <h3 style="margin-bottom:1rem;">✈️ Telegram Settings</h3>
+    <p style="color:var(--text-muted);font-size:0.82rem;margin-bottom:1rem;">
+      Create a Telegram Bot via <strong>@BotFather</strong>, then get your Chat ID via <strong>@userinfobot</strong>.
+      Your settings are saved locally on this device only.
+    </p>
+    <div class="tg-field">
+      <label>Bot Token</label>
+      <input type="text" id="tgTokenInput" placeholder="123456789:ABCdef..." autocomplete="off" />
+    </div>
+    <div class="tg-field">
+      <label>Chat ID</label>
+      <input type="text" id="tgChatIdInput" placeholder="-100123456789 or your user ID" autocomplete="off" />
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1.2rem;">
+      <button class="btn-tg-save" onclick="saveTelegramSettings()">Save Settings</button>
+      <button class="btn-tg-cancel" onclick="closeTelegramSettings()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== FOOTER ===== -->
 <footer class="site-footer">
   <p>Oil Depletion Tracker &nbsp;|&nbsp; Data sources: IEA, EIA, national energy agencies &nbsp;|&nbsp; Refreshes daily &nbsp;|&nbsp; For brokerage intelligence purposes only</p>

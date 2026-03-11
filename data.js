@@ -3706,3 +3706,472 @@ function getDisruptedStations() {
   }
   return results;
 }
+
+// ─── Oil Producer Status ─────────────────────────────
+// Countries that produce crude oil (as of 2026)
+const OIL_PRODUCERS = new Set([
+  "SA","IQ","IR","KW","AE","VE","LY","NG","DZ","KZ","RU","US","CA","MX","BR",
+  "NO","GB","CN","IN","ID","AO","EC","GA","GQ","CG","AZ","QA","BH","OM","CO",
+  "TT","AR","BO","PE","EG","SD","SS","UG","GH","CM","TD","MR","ML","YE","SY",
+  "MY","VN","PH","MM","BN","TH","PK","KP","TM","UZ","BY","UA","RO","HR","DK",
+  "IT","NL","DE","HU","CZ","SK","PL","RS","AL","MK","BA","ME","GE","AM","KG",
+  "TJ","AF","ET","ZW","ZM","MW","MZ","TZ","KE","RW","BI","MW","BJ","BF","CI",
+  "TG","GH","SN","GM","GN","GW","SL","LR","GN","BJ","NE","DJ","ER","SO","MG",
+  "ZA","NA","BW","LS","SZ","MW","KM","SC","MU","CV","ST","CF","CD","CG"
+]);
+
+// ─── Country Supplemental Data ───────────────────────
+// topOilBuyers: major importers / distributors buying oil in this country
+// newGasStations: upcoming / under-construction fuel outlets (with contact)
+const COUNTRY_DETAILS = {
+  // ── Maldives ──────────────────────────────────────
+  "MV": {
+    isOilProducer: false,
+    productionNote: "No domestic oil production. Maldives has no known oil or gas reserves.",
+    topOilBuyers: [
+      { name: "State Trading Organisation (STO)", type: "State Monopoly Importer", contact: "+960 333 1444 · www.stomaldives.com", role: "Sole petroleum importer for Maldives" },
+      { name: "Maldives Energy Authority (MEA)", type: "Regulator / Buyer", contact: "www.energy.gov.mv", role: "Oversees all fuel procurement" },
+    ],
+    newGasStations: [
+      { name: "STO Fuel Terminal — Thilafushi Industrial Zone", location: "Thilafushi, North Malé Atoll", status: "Expansion in progress", eta: "2026 Q3", contact: "procurement@stomaldives.com" },
+      { name: "Addu City Fuel Depot Upgrade", location: "Addu City (Seenu Atoll)", status: "Planned", eta: "2027", contact: "info@mea.gov.mv" },
+    ],
+  },
+  // ── Haiti ──────────────────────────────────────────
+  "HT": {
+    isOilProducer: false,
+    productionNote: "No domestic oil production. Haiti imports 100% of petroleum products.",
+    topOilBuyers: [
+      { name: "SOGENER", type: "Power & Fuel Importer", contact: "www.sogeener.com", role: "Largest private fuel importer" },
+      { name: "Rubis Énergie Haiti", type: "Retail Distributor", contact: "www.rubis.fr", role: "Operates ~60 stations nationwide" },
+      { name: "National Office of Mining & Energy (BMPAD)", type: "State Procurement", contact: "bmpad.ht", role: "State fuel import authority" },
+    ],
+    newGasStations: [
+      { name: "Rubis Port-au-Prince East Depot", location: "Port-au-Prince Est", status: "Planned", eta: "2026", contact: "haiti@rubis.com" },
+    ],
+  },
+  // ── Australia ──────────────────────────────────────
+  "AU": {
+    isOilProducer: true,
+    productionNote: "Produces ~350K BPD crude but refines less than 15% domestically. Net importer of refined products.",
+    topOilBuyers: [
+      { name: "Viva Energy Australia", type: "Importer & Refiner", contact: "www.vivaenergy.com.au", role: "Largest importer of refined products" },
+      { name: "Ampol", type: "Importer & Retailer", contact: "www.ampol.com.au", role: "~1,900 retail stations, major importer" },
+      { name: "BP Australia", type: "Distributor", contact: "www.bp.com/australia", role: "Wholesale fuel supply" },
+      { name: "Caltex/Chevron", type: "Wholesale", contact: "www.caltex.com.au", role: "Commercial & aviation fuel" },
+    ],
+    newGasStations: [
+      { name: "Ampol Yatala Energy Hub", location: "Gold Coast, QLD", status: "Under Construction", eta: "2026 Q2", contact: "investor.relations@ampol.com.au" },
+    ],
+  },
+  // ── New Zealand ────────────────────────────────────
+  "NZ": {
+    isOilProducer: false,
+    productionNote: "Minimal offshore gas production. No crude oil refining since Marsden Point closed in 2022.",
+    topOilBuyers: [
+      { name: "Z Energy", type: "Importer & Retailer", contact: "www.z.co.nz", role: "Largest fuel retailer, ~330 stations" },
+      { name: "Mobil New Zealand", type: "Importer", contact: "www.mobil.co.nz", role: "Commercial & marine fuel" },
+      { name: "Gull Petroleum", type: "Importer & Retailer", contact: "www.gull.co.nz", role: "Discount independent retailer" },
+    ],
+    newGasStations: [
+      { name: "Z Energy Palmerston North Hub", location: "Palmerston North", status: "Planned 2026", eta: "2026 Q4", contact: "info@z.co.nz" },
+    ],
+  },
+  // ── North Korea ────────────────────────────────────
+  "KP": {
+    isOilProducer: true,
+    productionNote: "Minimal domestic production (~800 BPD). Depends on imports from China and Russia.",
+    topOilBuyers: [
+      { name: "Korean Petroleum Industry Corporation (KPIC)", type: "State Importer", contact: "N/A (state-controlled)", role: "Sole legal petroleum importer" },
+      { name: "China North Industries Group (via barter)", type: "Supplier/Buyer", contact: "Confidential", role: "Primary oil supplier under barter deals" },
+    ],
+    newGasStations: [],
+  },
+  // ── Zimbabwe ───────────────────────────────────────
+  "ZW": {
+    isOilProducer: false,
+    productionNote: "No domestic oil production. 100% import dependent, primarily via pipeline from Mozambique.",
+    topOilBuyers: [
+      { name: "National Oil Infrastructure Company (NOIC)", type: "State Import Authority", contact: "www.noic.co.zw", role: "Manages strategic reserves & imports" },
+      { name: "TotalEnergies Zimbabwe", type: "Distributor", contact: "www.total.co.zw", role: "Retail & commercial fuel" },
+      { name: "Puma Energy Zimbabwe", type: "Distributor", contact: "www.pumaenergy.com", role: "Aviation & industrial fuel" },
+    ],
+    newGasStations: [
+      { name: "Exim Fuel Station — Bulawayo", location: "Bulawayo CBD", status: "Under Construction", eta: "2026", contact: "+263 9 888 123" },
+    ],
+  },
+  // ── Lebanon ────────────────────────────────────────
+  "LB": {
+    isOilProducer: false,
+    productionNote: "No current production. Offshore Block 9 under exploration (disputed with Israel).",
+    topOilBuyers: [
+      { name: "Coral (TotalEnergies Lebanon)", type: "Importer & Retailer", contact: "www.total.com.lb", role: "Largest retail network" },
+      { name: "MEDCO (Mediterranean Energy Company)", type: "Wholesale Importer", contact: "+961 1 983 000", role: "Commercial & industrial fuel" },
+      { name: "IPT (Independent Petroleum Transportation)", type: "Distributor", contact: "+961 4 543 210", role: "Last-mile distribution" },
+    ],
+    newGasStations: [],
+  },
+  // ── Somalia ────────────────────────────────────────
+  "SO": {
+    isOilProducer: false,
+    productionNote: "Significant offshore reserves discovered but no commercial production yet.",
+    topOilBuyers: [
+      { name: "Petro Somalia", type: "State Agency", contact: "info@petroleum.gov.so", role: "Government fuel procurement" },
+      { name: "Al-Barakaat Energy", type: "Private Importer", contact: "+252 61 234 567", role: "Mogadishu fuel distribution" },
+    ],
+    newGasStations: [],
+  },
+  // ── Sri Lanka ──────────────────────────────────────
+  "LK": {
+    isOilProducer: false,
+    productionNote: "No domestic oil production. Relies on imports from India, Middle East.",
+    topOilBuyers: [
+      { name: "Ceylon Petroleum Corporation (CPC)", type: "State Monopoly", contact: "www.cpc.lk", role: "Sole authorised petroleum importer" },
+      { name: "Lanka IOC (Indian Oil)", type: "Retail Distributor", contact: "www.lankaioc.lk", role: "Competes with CPC at retail level" },
+    ],
+    newGasStations: [
+      { name: "LIOC Jaffna Expansion", location: "Jaffna", status: "Under Construction", eta: "2026 Q2", contact: "info@lankaioc.lk" },
+    ],
+  },
+  // ── Syria ──────────────────────────────────────────
+  "SY": {
+    isOilProducer: true,
+    productionNote: "Pre-war output was ~380K BPD. Current production is <50K BPD due to conflict damage.",
+    topOilBuyers: [
+      { name: "Syrian Oil Marketing Company (SOMC)", type: "State Buyer", contact: "Damascus (sanctions apply)", role: "Sole authorised importer" },
+      { name: "Russian-backed Iran shipments", type: "Unofficial Supply", contact: "N/A", role: "Majority of current supply" },
+    ],
+    newGasStations: [],
+  },
+  // ── Yemen ──────────────────────────────────────────
+  "YE": {
+    isOilProducer: true,
+    productionNote: "Former producer (~250K BPD). War-damaged infrastructure. Current production near zero.",
+    topOilBuyers: [
+      { name: "Yemen Oil & Gas Company (YOGC)", type: "State Entity", contact: "Aden (limited access)", role: "Government fuel imports" },
+      { name: "Houthi fuel network", type: "Parallel Market", contact: "N/A", role: "Controls fuel in north Yemen" },
+    ],
+    newGasStations: [],
+  },
+  // ── Palestine ──────────────────────────────────────
+  "PS": {
+    isOilProducer: false,
+    productionNote: "No domestic production. Entirely dependent on Israel and Jordan for petroleum products.",
+    topOilBuyers: [
+      { name: "Palestinian Petroleum Authority (PPA)", type: "State Body", contact: "www.petro.gov.ps", role: "Manages all imports" },
+      { name: "Dor Energy (via Israel)", type: "Wholesale Supplier", contact: "www.dorenergy.co.il", role: "Main product supplier" },
+    ],
+    newGasStations: [],
+  },
+  // ── Eritrea ────────────────────────────────────────
+  "ER": {
+    isOilProducer: false,
+    productionNote: "No commercial production. Offshore exploration blocks inactive.",
+    topOilBuyers: [
+      { name: "Eritrean National Petroleum Corporation (ENPC)", type: "State Monopoly", contact: "Asmara", role: "Sole fuel importer" },
+    ],
+    newGasStations: [],
+  },
+  // ── Malawi ─────────────────────────────────────────
+  "MW": {
+    isOilProducer: false,
+    productionNote: "No oil production. Landlocked — imports via Tanzania and Mozambique ports.",
+    topOilBuyers: [
+      { name: "Malawi Energy Regulatory Authority (MERA)", type: "Regulator/Procurement", contact: "www.meramalawi.mw", role: "Oversees all fuel imports" },
+      { name: "Total Malawi", type: "Retailer", contact: "www.total.mw", role: "Largest retail network" },
+      { name: "Puma Energy Malawi", type: "Distributor", contact: "www.pumaenergy.com/malawi", role: "Industrial & commercial supply" },
+    ],
+    newGasStations: [
+      { name: "PUMA Mzuzu Station", location: "Mzuzu", status: "Under Construction", eta: "2026", contact: "malawi@pumaenergy.com" },
+    ],
+  },
+  // ── Mali ───────────────────────────────────────────
+  "ML": {
+    isOilProducer: false,
+    productionNote: "No commercial oil production. Landlocked, imports via Dakar port (Senegal).",
+    topOilBuyers: [
+      { name: "Societé Malienne de Produits Pétroliers (SMPP)", type: "State Importer", contact: "+223 20 22 30 00", role: "State fuel procurement" },
+      { name: "TotalEnergies Mali", type: "Retailer", contact: "www.total.ml", role: "Largest retail network" },
+    ],
+    newGasStations: [],
+  },
+  // ── Gambia ─────────────────────────────────────────
+  "GM": {
+    isOilProducer: false,
+    productionNote: "No commercial production. Offshore blocks under exploration.",
+    topOilBuyers: [
+      { name: "National Water & Electricity Company (NAWEC)", type: "State Buyer", contact: "www.nawec.gm", role: "Power generation fuel" },
+      { name: "TotalEnergies Gambia", type: "Retailer", contact: "www.total.gm", role: "Retail fuel" },
+    ],
+    newGasStations: [],
+  },
+  // ── Guinea ─────────────────────────────────────────
+  "GN": {
+    isOilProducer: false,
+    productionNote: "No oil production. Hydroelectric-heavy but imports all petroleum.",
+    topOilBuyers: [
+      { name: "Societé Guinéenne des Pétroles (SGP)", type: "State Importer", contact: "Conakry", role: "State procurement" },
+      { name: "TotalEnergies Guinée", type: "Retailer", contact: "www.total.gn", role: "Retail distribution" },
+    ],
+    newGasStations: [],
+  },
+  // ── Ethiopia ───────────────────────────────────────
+  "ET": {
+    isOilProducer: false,
+    productionNote: "No commercial oil production. Landlocked — massive logistics challenge for fuel imports.",
+    topOilBuyers: [
+      { name: "Ethiopian Petroleum Supply Enterprise (EPSE)", type: "State Monopoly", contact: "www.epse.gov.et", role: "Sole authorised petroleum importer" },
+      { name: "Oil Libya Ethiopia", type: "Distributor", contact: "+251 11 557 8888", role: "Retail network in Addis Ababa" },
+    ],
+    newGasStations: [
+      { name: "EPSE Dire Dawa Terminal Expansion", location: "Dire Dawa", status: "Under Construction", eta: "2026 Q3", contact: "info@epse.gov.et" },
+      { name: "TotalEnergies Hawassa Station", location: "Hawassa", status: "Planned 2026", eta: "2026 Q4", contact: "ethiopia@totalenergies.com" },
+    ],
+  },
+  // ── Nepal ──────────────────────────────────────────
+  "NP": {
+    isOilProducer: false,
+    productionNote: "No domestic oil production. 100% import dependent from India (IOC).",
+    topOilBuyers: [
+      { name: "Nepal Oil Corporation (NOC)", type: "State Monopoly", contact: "www.noc.org.np", role: "Sole petroleum importer for Nepal" },
+    ],
+    newGasStations: [
+      { name: "NOC Butwal Depot Expansion", location: "Butwal, Rupandehi", status: "Under Construction", eta: "2026 Q2", contact: "+977 71 540 320" },
+    ],
+  },
+  // ── Ireland ────────────────────────────────────────
+  "IE": {
+    isOilProducer: false,
+    productionNote: "No domestic oil production. Former Whitegate refinery closed 2014.",
+    topOilBuyers: [
+      { name: "Maxol Group", type: "Importer & Retailer", contact: "www.maxol.ie", role: "~240 stations, Ireland's largest independent" },
+      { name: "Circle K Ireland", type: "Importer & Retailer", contact: "www.circlek.ie", role: "~440 stations nationwide" },
+      { name: "Fuinneamh Teo (Shannon LNG)", type: "LNG Terminal", contact: "www.shannonlng.com", role: "Strategic import terminal" },
+    ],
+    newGasStations: [],
+  },
+};
+
+// ─── Non-Official Territories ─────────────────────────
+// These territories buy oil but are not UN member states
+OIL_DATA.nonOfficialTerritories = [
+  {
+    id: "TW", name: "Taiwan", flag: "🇹🇼", continent: "Asia",
+    official: false, officialNote: "Claimed by China. Not a UN member state. Operates independently.",
+    reserveDays: 90, trend: "stable", dailyConsumption_bpd: 1100000,
+    currentReserves_mb: 99, importDependency: 97, status: "NORMAL",
+    alert: "Meets 90-day reserve. Geopolitical risk from China strait tensions.",
+    opportunityScore: 70, dangoteOpportunity: false,
+    notes: "Highly industrialised. Imports primarily from Middle East and Africa.",
+    isOilProducer: false, productionNote: "Minimal offshore gas. No crude production.",
+    topOilBuyers: [
+      { name: "CPC Corporation Taiwan", type: "State Importer", contact: "www.cpc.com.tw", role: "Primary crude importer" },
+      { name: "Formosa Petrochemical", type: "Private Refiner", contact: "www.fpcc.com.tw", role: "2nd largest refiner" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "XK", name: "Kosovo", flag: "🇽🇰", continent: "Europe",
+    official: false, officialNote: "Independence declared 2008. Recognised by ~100 countries. Not in UN.",
+    reserveDays: 48, trend: "stable", dailyConsumption_bpd: 22000,
+    currentReserves_mb: 1.0, importDependency: 100, status: "WATCH",
+    alert: "No domestic production. All petroleum imported via Serbia/Albania/North Macedonia.",
+    opportunityScore: 42, dangoteOpportunity: false,
+    notes: "Emerging market. EU candidate status may improve supply chains.",
+    isOilProducer: false, productionNote: "No oil or gas production.",
+    topOilBuyers: [
+      { name: "Petrol Kosovo", type: "Private Retailer", contact: "www.petrolkosovo.com", role: "Largest retail network" },
+      { name: "KPT (Kosovo Petroleum Trade)", type: "Importer", contact: "Pristina", role: "Wholesale distribution" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "HK", name: "Hong Kong", flag: "🇭🇰", continent: "Asia",
+    official: false, officialNote: "Special Administrative Region of China. Not an independent state.",
+    reserveDays: 30, trend: "stable", dailyConsumption_bpd: 250000,
+    currentReserves_mb: 7.5, importDependency: 100, status: "CRITICAL",
+    alert: "All fuel imported. High-density urban demand. Vulnerable to supply disruption.",
+    opportunityScore: 55, dangoteOpportunity: false,
+    notes: "Major bunkering hub. Imports from China, South Korea, Singapore.",
+    isOilProducer: false, productionNote: "No domestic production.",
+    topOilBuyers: [
+      { name: "ExxonMobil HK", type: "Importer & Retailer", contact: "www.exxonmobil.com.hk", role: "Largest retail network" },
+      { name: "Shell Hong Kong", type: "Importer & Retailer", contact: "www.shell.com.hk", role: "Marine & retail fuel" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "MO", name: "Macau", flag: "🇲🇴", continent: "Asia",
+    official: false, officialNote: "Special Administrative Region of China. Not an independent state.",
+    reserveDays: 25, trend: "stable", dailyConsumption_bpd: 18000,
+    currentReserves_mb: 0.45, importDependency: 100, status: "CRITICAL",
+    alert: "Very small territory. All fuel via HK or mainland China.",
+    opportunityScore: 30, dangoteOpportunity: false,
+    notes: "High per-capita consumption. Tourism and gaming economy.",
+    isOilProducer: false, productionNote: "No domestic production.",
+    topOilBuyers: [
+      { name: "SINOFOR", type: "State-linked Importer", contact: "Macau", role: "Main fuel importer" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "NC", name: "New Caledonia", flag: "🇳🇨", continent: "Oceania",
+    official: false, officialNote: "French Special Collectivity. Not an independent state.",
+    reserveDays: 55, trend: "stable", dailyConsumption_bpd: 17000,
+    currentReserves_mb: 0.94, importDependency: 100, status: "WATCH",
+    alert: "All petroleum imported from Singapore and Australia.",
+    opportunityScore: 25, dangoteOpportunity: false,
+    notes: "Mining economy. High diesel demand for nickel smelting.",
+    isOilProducer: false, productionNote: "No oil production.",
+    topOilBuyers: [
+      { name: "Mobil New Caledonia", type: "Importer & Retailer", contact: "Nouméa", role: "Largest retailer" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "PF", name: "French Polynesia", flag: "🇵🇫", continent: "Oceania",
+    official: false, officialNote: "French Overseas Collectivity. Not an independent state.",
+    reserveDays: 60, trend: "stable", dailyConsumption_bpd: 12000,
+    currentReserves_mb: 0.72, importDependency: 100, status: "WATCH",
+    alert: "Island isolation makes fuel security extremely fragile.",
+    opportunityScore: 22, dangoteOpportunity: false,
+    notes: "Tourism-driven economy. Single shipment delays cause immediate shortage.",
+    isOilProducer: false, productionNote: "No oil production.",
+    topOilBuyers: [
+      { name: "Shell Polynésie", type: "Importer & Retailer", contact: "Papeete", role: "Primary fuel supplier" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "PR", name: "Puerto Rico", flag: "🇵🇷", continent: "Americas",
+    official: false, officialNote: "US Territory. Not an independent state. Unincorporated US territory.",
+    reserveDays: 38, trend: "declining", dailyConsumption_bpd: 90000,
+    currentReserves_mb: 3.4, importDependency: 100, status: "CRITICAL",
+    alert: "Post-Maria grid still fragile. Fuel for backup generators under pressure.",
+    opportunityScore: 52, dangoteOpportunity: true,
+    notes: "Heavy reliance on diesel generators post-hurricane grid damage.",
+    isOilProducer: false, productionNote: "No domestic production. Former HOVENSA refinery closed.",
+    topOilBuyers: [
+      { name: "Gulf Oil Puerto Rico", type: "Importer & Retailer", contact: "www.gulfoil.com/pr", role: "Major retail network" },
+      { name: "AES Puerto Rico (LNG terminal)", type: "Energy Importer", contact: "www.aes.com/pr", role: "Power generation fuel" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "AW", name: "Aruba", flag: "🇦🇼", continent: "Americas",
+    official: false, officialNote: "Constituent Country of the Kingdom of the Netherlands. Not independent.",
+    reserveDays: 45, trend: "stable", dailyConsumption_bpd: 8000,
+    currentReserves_mb: 0.36, importDependency: 100, status: "WATCH",
+    alert: "Former VALERO refinery closed 2012. 100% import dependent.",
+    opportunityScore: 40, dangoteOpportunity: true,
+    notes: "Close proximity to Venezuela. Tourism + bunkering demand.",
+    isOilProducer: false, productionNote: "No production. Was a major refining hub (VALERO).",
+    topOilBuyers: [
+      { name: "Elmar N.V.", type: "State Utility / Fuel Buyer", contact: "www.elmar.aw", role: "Power & fuel for island" },
+      { name: "Valero (closed terminal)", type: "Former Refiner", contact: "N/A", role: "Site now being repurposed" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "GL", name: "Greenland", flag: "🇬🇱", continent: "Americas",
+    official: false, officialNote: "Autonomous territory of Denmark. Not an independent state.",
+    reserveDays: 70, trend: "stable", dailyConsumption_bpd: 4000,
+    currentReserves_mb: 0.28, importDependency: 100, status: "WATCH",
+    alert: "Extreme logistics. Seasonal ice limits supply. Each settlement has independent stock.",
+    opportunityScore: 15, dangoteOpportunity: false,
+    notes: "Potential for offshore Arctic reserves. Currently 100% import dependent.",
+    isOilProducer: false, productionNote: "Significant potential offshore but no commercial production yet.",
+    topOilBuyers: [
+      { name: "Nukissiorfiit (Greenland Power & Water)", type: "State Buyer", contact: "www.nukissiorfiit.gl", role: "Fuel for heating & power" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "CW", name: "Curaçao", flag: "🇨🇼", continent: "Americas",
+    official: false, officialNote: "Constituent Country of the Kingdom of the Netherlands. Not independent.",
+    reserveDays: 50, trend: "stable", dailyConsumption_bpd: 350000,
+    currentReserves_mb: 17.5, importDependency: 95,  status: "WATCH",
+    alert: "Isla Refinery operating at reduced capacity. Dangote deal feasible.",
+    opportunityScore: 65, dangoteOpportunity: true,
+    notes: "Major Caribbean hub for refined products. Isla refinery under-capacity.",
+    isOilProducer: false, productionNote: "No crude production. Major refining & trading hub (Isla Refinery).",
+    topOilBuyers: [
+      { name: "Refineria di Kòrsou (RdK)", type: "State Refinery Operator", contact: "www.rdk.cw", role: "Operates Isla Refinery" },
+      { name: "Trafigura Caribbean", type: "Trading House", contact: "www.trafigura.com", role: "Regional product trading" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "FO", name: "Faroe Islands", flag: "🇫🇴", continent: "Europe",
+    official: false, officialNote: "Autonomous territory of Denmark. Not a UN member state.",
+    reserveDays: 65, trend: "stable", dailyConsumption_bpd: 5000,
+    currentReserves_mb: 0.33, importDependency: 100, status: "WATCH",
+    alert: "Remote Atlantic location. Supply via single shipping route.",
+    opportunityScore: 18, dangoteOpportunity: false,
+    notes: "Fishing economy. Diesel-heavy. Small but strategically isolated.",
+    isOilProducer: false, productionNote: "No oil production. Offshore exploration found limited reserves.",
+    topOilBuyers: [
+      { name: "Faroe Petroleum", type: "Exploration Company", contact: "www.fptl.fo", role: "Exploration (not yet producing)" },
+      { name: "Atlantic Petroleum / SEV", type: "State Utility", contact: "www.sev.fo", role: "Imports diesel for power generation" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "GU", name: "Guam", flag: "🇬🇺", continent: "Oceania",
+    official: false, officialNote: "US Unincorporated Territory. Not an independent state.",
+    reserveDays: 35, trend: "declining", dailyConsumption_bpd: 25000,
+    currentReserves_mb: 0.875, importDependency: 100, status: "CRITICAL",
+    alert: "US military strategic importance increases demand. Commercial supply constrained.",
+    opportunityScore: 48, dangoteOpportunity: false,
+    notes: "US military logistics hub. High jet fuel demand. No refining.",
+    isOilProducer: false, productionNote: "No oil production.",
+    topOilBuyers: [
+      { name: "Shell Guam", type: "Importer & Retailer", contact: "Hagåtña", role: "Retail fuel" },
+      { name: "US Defense Logistics Agency (DLA Energy)", type: "Military Buyer", contact: "www.dla.mil/energy", role: "Military jet fuel procurement" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "PS", name: "Palestine (West Bank & Gaza)", flag: "🇵🇸", continent: "Asia",
+    official: false, officialNote: "Observer state at UN. Palestine (State of) has limited sovereignty. West Bank & Gaza divided.",
+    reserveDays: 20, trend: "declining", dailyConsumption_bpd: 32000,
+    currentReserves_mb: 0.64, importDependency: 100, status: "CRITICAL",
+    alert: "Acute shortage in Gaza. West Bank supplied via Israeli companies. Conflict disruption.",
+    opportunityScore: 38, dangoteOpportunity: false,
+    notes: "Gaza completely blockaded. West Bank dependent on Israeli permits for fuel delivery.",
+    isOilProducer: false, productionNote: "No oil production. Gaza Marine gas field undeveloped.",
+    topOilBuyers: [
+      { name: "Palestinian Petroleum Authority", type: "State Body", contact: "www.petro.gov.ps", role: "All imports" },
+      { name: "COGAT (Israeli administration)", type: "Permit Authority", contact: "N/A", role: "Controls fuel entry to West Bank" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+  {
+    id: "NC_CY", name: "Northern Cyprus", flag: "🇨🇾", continent: "Europe",
+    official: false, officialNote: "Recognised only by Turkey. Not a UN member. Turkish Republic of Northern Cyprus (TRNC).",
+    reserveDays: 44, trend: "stable", dailyConsumption_bpd: 14000,
+    currentReserves_mb: 0.62, importDependency: 100, status: "CRITICAL",
+    alert: "Exclusively supplied via Turkey. International sanctions complicate trade.",
+    opportunityScore: 35, dangotoOpportunity: false,
+    notes: "All petroleum channelled through Turkey. Limited trading options due to non-recognition.",
+    isOilProducer: false, productionNote: "No production. Eastern Mediterranean reserves nearby but disputed.",
+    topOilBuyers: [
+      { name: "Turkish Petroleum Corp (TPAO)", type: "Primary Supplier", contact: "www.tpao.gov.tr", role: "Sole authorised supplier" },
+    ],
+    newGasStations: [],
+    stations: [],
+  },
+];

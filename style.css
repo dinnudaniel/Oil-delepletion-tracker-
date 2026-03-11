@@ -713,3 +713,148 @@ body {
   width: 100% !important;
   display: block;
 }
+
+/* ── Oil Producer Pills ─────────────────────────────── */
+.producer-pill {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: 20px;
+  vertical-align: middle;
+}
+.producer-yes { background: #0d3b2622; color: #27ae60; border: 1px solid #27ae6044; }
+.producer-no  { background: #3b1a0d22; color: #f39c12; border: 1px solid #f39c1244; }
+
+/* ── Non-Official Territory Badge ───────────────────── */
+.non-official-badge {
+  background: #f39c1215;
+  border: 1px solid #f39c1244;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  color: #f39c12;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Top Oil Buyers ─────────────────────────────────── */
+.buyers-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.buyer-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+}
+.buyer-name { font-weight: 700; font-size: 0.88rem; color: var(--text-primary); }
+.buyer-type {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.1rem 0.45rem;
+  margin-left: 0.4rem;
+}
+.buyer-role    { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
+.buyer-contact { font-size: 0.75rem; color: #58a6ff; margin-top: 0.25rem; }
+
+/* ── New Gas Stations ───────────────────────────────── */
+.new-stations-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.new-station-item {
+  background: #0d2b1a;
+  border: 1px solid #27ae6033;
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+}
+.ns-name    { font-weight: 700; font-size: 0.88rem; color: #27ae60; }
+.ns-meta    { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+.ns-status  { color: #f39c12; font-weight: 600; }
+.ns-contact { font-size: 0.75rem; color: #58a6ff; margin-top: 0.25rem; }
+
+/* ── Telegram Button Row ────────────────────────────── */
+.modal-telegram-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+.btn-send-telegram {
+  flex: 1;
+  background: #0088cc;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-send-telegram:hover { background: #006fa8; }
+.btn-tg-settings {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+.btn-tg-settings:hover { color: var(--text-primary); }
+
+/* ── Telegram Settings Modal ─────────────────────────── */
+.tg-settings-modal { max-width: 420px; }
+.tg-field { margin-bottom: 0.9rem; }
+.tg-field label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tg-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+}
+.btn-tg-save {
+  background: #0088cc;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-tg-cancel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+/* ── Non-Official Territory in Grid ─────────────────── */
+.clm-nonofficial { border-color: #f39c1244 !important; }
+.clm-territory-tag {
+  font-size: 0.55rem;
+  background: #f39c1222;
+  color: #f39c12;
+  border: 1px solid #f39c1244;
+  border-radius: 8px;
+  padding: 0.1rem 0.35rem;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  font-weight: 700;
+  text-transform: uppercase;
+}

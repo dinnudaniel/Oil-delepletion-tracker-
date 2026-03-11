@@ -479,12 +479,17 @@ function renderDangoteProfile() {
 
 // ─── Countries List Modal (Countries Tracked KPI click) ───────────────────────
 function openCountriesListModal() {
-  const countries  = OIL_DATA.countries;
-  const continents = [...new Set(countries.map(c => c.continent))].sort();
-  const total      = countries.length;
-  const critical   = countries.filter(c => c.status === "CRITICAL").length;
-  const watch      = countries.filter(c => c.status === "WATCH").length;
-  const normal     = countries.filter(c => c.status === "NORMAL").length;
+  const allEntries = [
+    ...OIL_DATA.countries,
+    ...(OIL_DATA.nonOfficialTerritories || []),
+  ];
+  const continents = [...new Set(allEntries.map(c => c.continent))].sort();
+  const total      = allEntries.length;
+  const official   = OIL_DATA.countries.length;
+  const nonOff     = (OIL_DATA.nonOfficialTerritories || []).length;
+  const critical   = allEntries.filter(c => c.status === "CRITICAL").length;
+  const watch      = allEntries.filter(c => c.status === "WATCH").length;
+  const normal     = allEntries.filter(c => c.status === "NORMAL").length;
 
   const continentOptions = continents.map(c =>
     `<option value="${c}">${c}</option>`
@@ -492,9 +497,10 @@ function openCountriesListModal() {
 
   document.getElementById("modalContent").innerHTML = `
     <div style="margin-bottom:1rem;">
-      <div class="modal-country-name" style="font-size:1.4rem;">🌍 All ${total} Countries Tracked</div>
+      <div class="modal-country-name" style="font-size:1.4rem;">🌍 All ${total} Countries & Territories Tracked</div>
       <p style="color:var(--text-muted);font-size:0.83rem;margin-top:0.3rem;">
-        Real-time oil reserve monitoring worldwide. Click any country for full details.
+        ${official} UN member states + <span style="color:#f39c12;">${nonOff} non-official territories</span> buying oil.
+        Click any entry for full details.
       </p>
       <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.75rem;">
         <span style="background:#e74c3c22;color:#e74c3c;border:1px solid #e74c3c44;border-radius:12px;padding:0.2rem 0.7rem;font-size:0.75rem;font-weight:700;">🔴 ${critical} Critical</span>
@@ -534,14 +540,21 @@ function filterCountriesListModal() {
   const status    = document.getElementById("clmStatus")?.value || "";
   const continent = document.getElementById("clmContinent")?.value || "";
 
-  let list = [...OIL_DATA.countries];
+  // Combine official countries + non-official territories
+  const allEntries = [
+    ...OIL_DATA.countries,
+    ...(OIL_DATA.nonOfficialTerritories || []),
+  ];
+  const total = allEntries.length;
+
+  let list = [...allEntries];
   if (q)         list = list.filter(c => c.name.toLowerCase().includes(q) || c.continent.toLowerCase().includes(q));
   if (status)    list = list.filter(c => c.status === status);
   if (continent) list = list.filter(c => c.continent === continent);
   list.sort((a, b) => a.reserveDays - b.reserveDays);
 
   const countEl = document.getElementById("clmResultCount");
-  if (countEl) countEl.textContent = `Showing ${list.length} of ${OIL_DATA.countries.length} countries`;
+  if (countEl) countEl.textContent = `Showing ${list.length} of ${total} countries & territories`;
 
   const grid = document.getElementById("clmCountGrid");
   if (!grid) return;
@@ -552,9 +565,10 @@ function filterCountriesListModal() {
   }
 
   grid.innerHTML = list.map(c => `
-    <div class="clm-item clm-${c.status}" onclick="openCountryFromList('${c.id}')" title="${c.name} — Click for full details">
+    <div class="clm-item clm-${c.status}${c.official === false ? " clm-nonofficial" : ""}"
+         onclick="openCountryFromList('${c.id}')" title="${c.name} — Click for full details">
       <div class="clm-flag">${c.flag}</div>
-      <div class="clm-name">${c.name}</div>
+      <div class="clm-name">${c.name}${c.official === false ? '<span class="clm-territory-tag">Territory</span>' : ""}</div>
       <div class="clm-days" style="color:${getStatusColor(c.status)}">${c.reserveDays}d</div>
       <div class="clm-meta">
         <span class="card-status-badge badge-${c.status}" style="font-size:0.58rem;">${c.status}</span>
@@ -571,10 +585,59 @@ function openCountryFromList(countryId) {
 
 // ─── Modal ────────────────────────────────────────────
 function openModal(countryId) {
-  const c = OIL_DATA.countries.find(x => x.id === countryId);
+  // look in both official countries and non-official territories
+  const c = OIL_DATA.countries.find(x => x.id === countryId)
+         || (OIL_DATA.nonOfficialTerritories || []).find(x => x.id === countryId);
   if (!c) return;
 
-  const stationRows = c.stations.map(s => `
+  // Supplemental detail (buyers, new stations, producer info)
+  const detail = COUNTRY_DETAILS[countryId] || {};
+  const isProducer = detail.isOilProducer ?? c.isOilProducer ?? OIL_PRODUCERS.has(countryId);
+  const productionNote = detail.productionNote || c.productionNote
+    || (isProducer ? "Oil-producing nation." : "No domestic oil production.");
+
+  // Non-official territory badge
+  const nonOfficialBadge = c.official === false
+    ? `<div class="non-official-badge">⚠️ Non-official territory — ${c.officialNote}</div>`
+    : "";
+
+  // Oil producer pill
+  const producerPill = isProducer
+    ? `<span class="producer-pill producer-yes">🛢️ Oil Producer</span>`
+    : `<span class="producer-pill producer-no">📦 Non-Producer (100% Import)</span>`;
+
+  // Top oil buyers section
+  const buyers = detail.topOilBuyers || c.topOilBuyers || [];
+  const buyersHTML = buyers.length ? `
+    <div class="modal-section">
+      <h4>🏢 Top Oil Buyers / Importers</h4>
+      <div class="buyers-list">
+        ${buyers.map(b => `
+          <div class="buyer-item">
+            <div class="buyer-name">${b.name} <span class="buyer-type">${b.type}</span></div>
+            <div class="buyer-role">${b.role}</div>
+            <div class="buyer-contact">📞 ${b.contact}</div>
+          </div>`).join("")}
+      </div>
+    </div>` : "";
+
+  // New gas stations in progress
+  const newStations = detail.newGasStations || c.newGasStations || [];
+  const newStationsHTML = newStations.length ? `
+    <div class="modal-section">
+      <h4>🚧 New Gas Stations / Projects in Progress</h4>
+      <div class="new-stations-list">
+        ${newStations.map(s => `
+          <div class="new-station-item">
+            <div class="ns-name">${s.name}</div>
+            <div class="ns-meta">${s.location} · <span class="ns-status">${s.status}</span> · ETA: ${s.eta}</div>
+            <div class="ns-contact">📞 ${s.contact}</div>
+          </div>`).join("")}
+      </div>
+    </div>` : "";
+
+  // Existing tracked stations
+  const stationRows = (c.stations || []).map(s => `
     <li>
       <div>
         <div class="station-nm">${s.name}</div>
@@ -593,16 +656,22 @@ function openModal(countryId) {
   document.getElementById("modalContent").innerHTML = `
     <div class="modal-country-header">
       <div class="modal-flag">${c.flag}</div>
-      <div>
+      <div style="flex:1">
         <div class="modal-country-name">${c.name}</div>
         <div class="modal-status">
           <span class="card-status-badge badge-${c.status}">${c.status}</span>
-          &nbsp; ${c.continent}
+          &nbsp; ${c.continent} &nbsp; ${producerPill}
         </div>
       </div>
     </div>
 
+    ${nonOfficialBadge}
     <div class="modal-alert-box">⚠️ ${c.alert}</div>
+
+    <div class="modal-section">
+      <h4>🛢️ Oil Production Status</h4>
+      <div class="modal-notes-box">${productionNote}</div>
+    </div>
 
     <div class="modal-section">
       <h4>Supply Metrics</h4>
@@ -635,10 +704,20 @@ function openModal(countryId) {
     </div>
 
     ${dangoteSection}
+    ${buyersHTML}
+    ${newStationsHTML}
 
+    ${(c.stations||[]).length ? `
     <div class="modal-section">
       <h4>⛽ Tracked Fuel Facilities (${c.stations.length})</h4>
       <ul class="station-list-modal">${stationRows}</ul>
+    </div>` : ""}
+
+    <div class="modal-section modal-telegram-row">
+      <button class="btn-send-telegram" onclick="sendToTelegram('${countryId}')">
+        ✈️ Send Report to Telegram
+      </button>
+      <button class="btn-tg-settings" onclick="openTelegramSettings()" title="Telegram settings">⚙️</button>
     </div>
   `;
 
@@ -649,8 +728,120 @@ function closeModal() {
   document.getElementById("modalOverlay").classList.remove("open");
 }
 
+// ─── Telegram Integration ─────────────────────────────
+function getTgConfig() {
+  return {
+    token:  localStorage.getItem("tg_token")  || "",
+    chatId: localStorage.getItem("tg_chatid") || "",
+  };
+}
+
+function openTelegramSettings() {
+  const cfg = getTgConfig();
+  const overlay = document.getElementById("tgSettingsOverlay");
+  document.getElementById("tgTokenInput").value  = cfg.token;
+  document.getElementById("tgChatIdInput").value = cfg.chatId;
+  overlay.classList.add("open");
+}
+
+function closeTelegramSettings() {
+  document.getElementById("tgSettingsOverlay").classList.remove("open");
+}
+
+function saveTelegramSettings() {
+  const token  = document.getElementById("tgTokenInput").value.trim();
+  const chatId = document.getElementById("tgChatIdInput").value.trim();
+  if (!token || !chatId) { alert("Both Bot Token and Chat ID are required."); return; }
+  localStorage.setItem("tg_token",  token);
+  localStorage.setItem("tg_chatid", chatId);
+  closeTelegramSettings();
+  alert("Telegram settings saved!");
+}
+
+async function sendToTelegram(countryId) {
+  const cfg = getTgConfig();
+  if (!cfg.token || !cfg.chatId) {
+    openTelegramSettings();
+    return;
+  }
+
+  const c = OIL_DATA.countries.find(x => x.id === countryId)
+         || (OIL_DATA.nonOfficialTerritories || []).find(x => x.id === countryId);
+  if (!c) return;
+
+  const detail    = COUNTRY_DETAILS[countryId] || {};
+  const isProducer = detail.isOilProducer ?? c.isOilProducer ?? OIL_PRODUCERS.has(countryId);
+  const buyers    = detail.topOilBuyers   || c.topOilBuyers   || [];
+  const newSt     = detail.newGasStations || c.newGasStations  || [];
+  const nonOff    = c.official === false ? `⚠️ *Non-official territory:* ${c.officialNote}\n\n` : "";
+
+  let msg = `🛢️ *Oil Depletion Tracker — ${c.flag} ${c.name}*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━\n`;
+  msg += nonOff;
+  msg += `📍 *Continent:* ${c.continent}\n`;
+  msg += `🚦 *Status:* ${c.status}\n`;
+  msg += `⛽ *Days of Supply Left:* ${c.reserveDays} days\n`;
+  msg += `📉 *Reserve Trend:* ${c.trend}\n`;
+  msg += `🏭 *Oil Producer:* ${isProducer ? "YES" : "NO — 100% import dependent"}\n`;
+  msg += `📊 *Import Dependency:* ${c.importDependency}%\n`;
+  msg += `📦 *Daily Consumption:* ${c.dailyConsumption_bpd.toLocaleString()} BPD\n`;
+  msg += `🗄️ *Current Reserves:* ${c.currentReserves_mb.toLocaleString()} M bbl\n`;
+  msg += `🎯 *Dangote Opp. Score:* ${c.opportunityScore}/100\n\n`;
+
+  msg += `⚠️ *Alert:* ${c.alert}\n\n`;
+
+  if (detail.productionNote || c.productionNote) {
+    msg += `🛢️ *Production Note:* ${detail.productionNote || c.productionNote}\n\n`;
+  }
+
+  if (buyers.length) {
+    msg += `🏢 *Top Oil Buyers / Importers:*\n`;
+    buyers.forEach(b => {
+      msg += `• *${b.name}* (${b.type})\n  Role: ${b.role}\n  Contact: ${b.contact}\n`;
+    });
+    msg += "\n";
+  }
+
+  if (newSt.length) {
+    msg += `🚧 *New Gas Stations / Projects in Progress:*\n`;
+    newSt.forEach(s => {
+      msg += `• *${s.name}* — ${s.location}\n  Status: ${s.status} | ETA: ${s.eta}\n  Contact: ${s.contact}\n`;
+    });
+    msg += "\n";
+  }
+
+  if (c.notes) {
+    msg += `📝 *Notes:* ${c.notes}\n\n`;
+  }
+
+  msg += `━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `📡 _Oil Depletion Tracker · ${new Date().toLocaleString()}_`;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${cfg.token}/sendMessage`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: cfg.chatId, text: msg, parse_mode: "Markdown" }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      alert(`✅ Report for ${c.name} sent to Telegram!`);
+    } else {
+      alert(`❌ Telegram error: ${json.description}\n\nCheck your Bot Token and Chat ID in settings.`);
+    }
+  } catch (e) {
+    alert(`❌ Network error sending to Telegram: ${e.message}`);
+  }
+}
+
 // Close modal on Escape key
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    closeModal();
+    closeTelegramSettings();
+  }
+});
+
 
 // ─── View Switcher ────────────────────────────────────
 function showView(name) {
