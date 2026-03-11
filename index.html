@@ -68,6 +68,14 @@
       <!-- KPI Cards -->
       <div class="kpi-row" id="kpiRow"></div>
 
+      <!-- Daily Briefing -->
+      <div style="margin-bottom:1rem;display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+        <button class="btn-send-telegram" style="flex:none;padding:0.55rem 1.1rem;font-size:0.85rem;" onclick="sendDailyBriefing()">
+          ✈️ Send Daily Briefing to Telegram
+        </button>
+        <button class="btn-tg-settings" onclick="openTelegramSettings()" title="Telegram settings">⚙️</button>
+      </div>
+
       <!-- Charts Row -->
       <div class="charts-row">
         <div class="chart-card chart-card-bar">
